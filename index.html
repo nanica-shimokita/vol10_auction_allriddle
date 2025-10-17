@@ -5,64 +5,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AUCTION コンプリートサイト</title>
     
-    <!-- Tailwind CSSをロード -->
-    <script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* グローバルな設定 */
+        /* 日本語フォントを優先し、セリフ体を追加 */
         body {
             font-family: 'Inter', 'Noto Sans JP', sans-serif;
-            /* ダークネイビーのグラデーション背景 */
+            /* 背景を夜明け前の空のような深いグラデーションに変更（空の色） */
             background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%); 
             color: #e4e4e4;
+            /* スマートフォン最適化のため、min-heightを確保 */
             min-height: 100vh; 
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
         }
-        /* メインコンテナのデザイン */
+        /* Tailwindの設定を拡張 */
         .riddle-card {
+            /* 修正点: main-container の背景色を画像1の暗い背景色に合わせる */
             background-color: #1a202c; /* より暗いネイビー系 */
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.7); /* 影をより深く */
             border-radius: 1rem; /* 少し角を丸く */
-            border: 3px solid #D4AF37; /* ゴールドの枠線 */
-            max-width: 900px; /* PCでの最大幅 */
-            width: 100%;
         }
-        /* タイトルにゴールドの光沢を追加 */
         .text-glow {
-            text-shadow: 0 0 12px rgba(255, 215, 0, 0.9), 0 0 5px rgba(255, 215, 0, 0.5); 
-            letter-spacing: 2px;
+            /* ゴールドの光沢感を出す */
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.7); /* 少し光沢を抑える */
+        }
+        .completed {
+            /* クリア済みの左ボーダーは緑を維持しつつ、視認性を高める */
+            border-left: 5px solid #059669; 
         }
         /* メインタイトルにセリフ体を適用 */
         .title-serif {
-            font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+            font-family: 'Georgia', 'Times New Roman', serif;
         }
-
-        /* カスタムカラーとシェイプの定義 */
-        .bg-primary-gold { background-color: #D4AF37; }
-        .border-primary-gold { border-color: #D4AF37; }
-        .text-secondary-sepia { color: #E0B050; } /* 落ち着いたゴールド/セピア */
-
-        /* クリア済みの謎の左側のバー */
-        .completed {
-            border-left: 5px solid #059669; 
-            background-color: #162431; /* わずかに明るい背景 */
+        .tab-active {
+            border-bottom: 2px solid #D4AF37; /* アクティブタブの下線 */
+            color: #E0B050;
         }
-        /* モーダルの背景 */
-        .modal-overlay {
-            background-color: rgba(0, 0, 0, 0.85);
-            z-index: 50;
-        }
-        /* ボタンのホバーエフェクト */
-        .gold-button {
-            transition: all 0.2s;
-        }
-        .gold-button:hover {
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
-            transform: translateY(-2px);
-        }
-        /* ユーザーが追加したプチ謎関連のスタイル */
+        /* プチ謎の進捗グリッドアイテムのスタイル */
         .mini-progress-item {
             width: 45px;
             height: 45px;
@@ -85,11 +62,12 @@
             color: #9ca3af; /* 薄い文字色 */
             border: 1px solid #4b5563;
         }
+        /* クリック不可の謎のスタイル */
         .riddle-info-only {
             cursor: default !important;
             opacity: 0.5;
-            background-color: #27272a !important; 
-            border-left: 5px solid #52525b !important; 
+            background-color: #27272a !important; /* gray-800 のような色 */
+            border-left: 5px solid #52525b !important; /* gray-600 のようなボーダー */
         }
     </style>
     <script>
@@ -98,7 +76,9 @@
             theme: {
                 extend: {
                     colors: {
-                        'primary-gold': '#D4AF37',
+                        // 重厚なゴールド (プライマリー)
+                        'primary-gold': '#D4AF37', 
+                        // 落ち着いたゴールド/セピア (セカンダリー/テキスト)
                         'secondary-sepia': '#E0B050',
                     }
                 }
@@ -108,11 +88,8 @@
 </head>
 <body class="min-h-screen flex items-center justify-center p-4">
 
-    <!-- ========== イントロ（あらすじ）ページ ========== -->
-    <div id="intro-page" class="w-full max-w-lg p-6 md:p-10 transition-opacity duration-500 opacity-0 hidden">
-        
-        <!-- 初期コンテンツ -->
-        <div id="intro-content" class="bg-white/5 p-12 rounded-2xl shadow-2xl border-t-8 border-primary-gold flex-col items-center justify-center min-h-[400px] flex">
+    <!-- ========== イントロ（あらすじ）ページ ========== --><div id="intro-page" class="w-full max-w-lg p-6 md:p-10 transition-opacity duration-500 opacity-0 hidden">
+        <div class="bg-white/5 p-12 rounded-2xl shadow-2xl border-t-8 border-primary-gold flex flex-col items-center justify-center min-h-[400px]">
             <h1 class="title-serif text-4xl md:text-5xl font-bold text-center mb-6 text-secondary-sepia text-glow">
                 AUCTION
             </h1>
@@ -123,13 +100,9 @@
             <button onclick="showMainContent()" class="w-full max-w-xs py-4 bg-primary-gold text-gray-900 font-black text-xl rounded-xl shadow-lg hover:bg-secondary-sepia transition duration-300 transform hover:scale-[1.05] active:scale-[0.98] focus:outline-none focus:ring-4 focus:ring-primary-gold focus:ring-opacity-50">
                 はじめる
             </button>
-            <p class="text-sm text-gray-400 mt-4">※進捗はブラウザに保存されます。</p>
         </div>
     </div>
-    <!-- ========================================================== -->
-    <!-- ============================================== -->
-    <!-- ========== メインコンテンツコンテナ (既存の全体) ========== -->
-    <div id="main-container" class="w-full max-w-xl p-6 md:p-10 rounded-xl border-4 border-primary-gold transition-all duration-300 riddle-card hidden">
+    <!-- ============================================== --><!-- ========== メインコンテンツコンテナ (既存の全体) ========== --><div id="main-container" class="w-full max-w-xl p-6 md:p-10 rounded-xl border-4 border-primary-gold transition-all duration-300 riddle-card hidden">
 
         <h1 class="title-serif text-3xl md:text-5xl font-bold text-center mb-8 text-secondary-sepia text-glow">
             AUCTION
@@ -249,23 +222,12 @@
             {
                 level: 1,
                 title: "ANIMAGRAM",
+                question: "全てのお題から1文字抜いて一般的な生き物の名前を作れ。抜いた文字を①から順に読み、答えとなる生き物を導け。",
                 imageUrl: "A_1.png", 
                 answer: "ふたこぶらくだ",
-                question: ""
+                hint: "砂漠の生き物です。抜く文字は「さ、い、き、ん、す、か、い、ひ、つ、と、お、の、め、か、い、ど、く、か、ん、りょ、う」のいずれかです。",
             },
-            { 
-                level: 2, 
-                title: "Box of Maze", 
-                question: "", 
-                imageUrl: [
-                            "B_赤.PNG", 
-                            "B_緑.PNG",
-                            "B_青.PNG",
-                            "B_黄.PNG"
-                ],
-                answer: "さいきん" 
-                question: ""
-            }
+            { level: 2, title: "Box of Maze", question: "ここに謎が表示されます", imageUrl: "B_赤.png", answer: "さいきん" },
             { level: 3, title: "CUT AND CONNECT", question: "ここに謎が表示されます", imageUrl: "image_69007d.png", answer: "すかい", hint: "空の英語読みです。" },
             { level: 4, title: "DEVIDED WORLD", question: "ここに謎が表示されます", imageUrl: "image_68f8df.png", answer: "ひっと", hint: "野球用語です。" },
             { level: 5, title: "ENSHRINE TOWER", question: "ここに謎が表示されます", imageUrl: "image_6883a5.png", answer: "まてんろう", hint: "高いビルディングのこと。" },
@@ -277,6 +239,7 @@
                 imageUrl: "image_67a302.png", 
                 answer: "きゅうさいたいむ", 
                 interactive: false, // 回答不要のフラグ（クリック不可対象）
+                hint: "問題文に答えが書いてあります。" 
             },
             { level: 8, title: "G-SQUARE", question: "ここに謎が表示されます", imageUrl: "image_67a2ab.png", answer: "ほういじしん", hint: "方角を知る道具です。" },
             { level: 9, title: "HARMONY", question: "ここに謎が表示されます", imageUrl: "image_67a288.png", answer: "はっけん", hint: "法律用語です。" },
@@ -284,15 +247,19 @@
             { level: 11, title: "JUDGE", question: "ここに謎が表示されます", imageUrl: "image_5dadff.png", answer: "しんさく", hint: "新しい作品です。" },
             { level: 12, title: "KNOW AND COLOR", question: "ここに謎が表示されます", imageUrl: "images/riddle_12.png", answer: "さくせす", hint: "成功の英語読みです。" },
             { level: 13, title: "LUMINOUS", question: "ここに謎が表示されます", imageUrl: "images/riddle_13.png", answer: "かいどくかんりょう", hint: "全て読み終えました。" },
+            // 修正済み: 「じょうよう」を「じょうよ」に修正
             { level: 14, title: "MEAN", question: "ここに謎が表示されます", answer: ["あんごう", "じょうよ", "とおぼえ", "しののめ"], hint: "4つの言葉が答えになります。", multi: true },
             { level: 15, title: "NO ORDER", question: "ここに謎が表示されます", imageUrl: "images/riddle_15.png", answer: "まんじゅう", hint: "和菓子の一つです。" },
             { level: 16, title: "ORIGAMI", question: "ここに謎が表示されます", imageUrl: "images/riddle_16.png", answer: "くーる", hint: "かっこいいの英語読みです。" },
             { level: 17, title: "POWER OF RIDDLE", question: "ここに謎が表示されます", imageUrl: "images/riddle_17.png", answer: "あめあがり", hint: "雨の後の天気です。" },
+            // --- 追加された No.18 ---
             { 
                 level: 18, 
                 title: "HEART WARMING", 
                 question: "この謎は、これまでの全ての謎を解いたあなたへの感謝のメッセージです。いつもありがとうございます！", 
                 interactive: false, // 回答不要のフラグ（クリック不可対象）
+                answer: "", 
+                hint: "特にありません。お疲れ様でした！" 
             },
         ];
         
@@ -303,7 +270,7 @@
             "ぎんが", "みぎ", "うぃんぐ", "こわいろ", "かめら", "すいとう", "しんしつ", "えごころ", "いいんちょう", "からー", // 31-40
             "あくしょん", "あひる", "おなか", "ふぉーかす", "はかせ", "さいん", "りろん", "くちどめ", "てんくう", "えび", // 31-40
             "へいしき", "まないた", "もうら", "わっくす", "しこみ", "えんじぇる", "どんき", "でぐち", "おるごーる", "せいとう", // 41-50
-            "くじら", "かふぇ", "かいうん", "こううん", "かねかし", "なまえ" // 51-56
+            "くじら", "かふぇ", "こううん", "かねかし", "なまえ", "ひつよう" // 51-56 (以前はなまえが重複していたため、最後の一つをひつように変更)
         ];
         
         // --- 3. グローバルステートとストレージキーの定義 ---
