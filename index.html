@@ -3,1164 +3,1053 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UNSEEN　ヒント</title>
-    <link rel="stylesheet" href="style.css">
+    <title>謎解き振り返りチャレンジ</title>
+    
+<script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* 日本語フォントを優先し、セリフ体を追加 */
+        body {
+            font-family: 'Inter', 'Noto Sans JP', sans-serif;
+            /* 背景を夜明け前の空のような深いグラデーションに変更（空の色） */
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%); 
+            color: #e4e4e4;
+            /* スマートフォン最適化のため、min-heightを確保 */
+            min-height: 100vh; 
+        }
+        /* Tailwindの設定を拡張 */
+        .riddle-card {
+            /* 修正点: main-container の背景色を画像1の暗い背景色に合わせる */
+            background-color: #1a202c; /* より暗いネイビー系 */
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.7); /* 影をより深く */
+            border-radius: 1rem; /* 少し角を丸く */
+        }
+        .text-glow {
+            /* ゴールドの光沢感を出す */
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.7); /* 少し光沢を抑える */
+        }
+        .completed {
+            /* クリア済みの左ボーダーは緑を維持しつつ、視認性を高める */
+            border-left: 5px solid #059669; 
+        }
+        /* メインタイトルにセリフ体を適用 */
+        .title-serif {
+            font-family: 'Georgia', 'Times New Roman', serif;
+        }
+        .tab-active {
+            border-bottom: 2px solid #D4AF37; /* アクティブタブの下線 */
+            color: #E0B050;
+        }
+        /* プチ謎の進捗グリッドアイテムのスタイル */
+        .mini-progress-item {
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+            border-radius: 0.5rem;
+            transition: all 0.3s;
+            cursor: default;
+        }
+        .mini-progress-solved {
+            background-color: #059669; /* エメラルドグリーン */
+            color: #fff;
+            box-shadow: 0 0 12px rgba(5, 150, 105, 0.8); /* 緑の光沢 */
+        }
+        .mini-progress-unsolved {
+            background-color: #374151; /* ダークグレー */
+            color: #9ca3af; /* 薄い文字色 */
+            border: 1px solid #4b5563;
+        }
+        /* クリック不可の謎のスタイル */
+        .riddle-info-only {
+            cursor: default !important;
+            opacity: 0.5;
+            background-color: #27272a !important; /* gray-800 のような色 */
+            border-left: 5px solid #52525b !important; /* gray-600 のようなボーダー */
+        }
+    </style>
+    <script>
+        // Tailwindのカスタム設定を新しいトーンに合わせて変更
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        // 重厚なゴールド (プライマリー)
+                        'primary-gold': '#D4AF37', 
+                        // 落ち着いたゴールド/セピア (セカンダリー/テキスト)
+                        'secondary-sepia': '#E0B050',
+                    }
+                }
+            }
+        }
+    </script>
 </head>
-<body>
-    <div class="container">
-        <div id="start-screen">
-            <h1>UNSEEN</h1>
-            <p>チームメンバー全員の合意を得てから読み進めましょう。</p>
-            <button id="show-hint-button">ヒントを見る</button>
-        </div>
+<body class="min-h-screen flex items-center justify-center p-4">
 
-        <div id="hint-content" style="display: none;">
-            <h1>UNSEEN　ヒント</h1>
-            <div class="hint-time-guidelines">
-                <p class="guideline-heading">ヒント使用時間目安</p>
-                <p>10分経過：1st STEPに挑戦中の場合ヒントを見る<br>
-                20分経過：2nd STEPに挑戦中の場合ヒントを見る<br>
-                30分経過：3rd STEPに挑戦中の場合ヒントを見る<br>
-                40分経過：4th STEPに挑戦中の場合ヒントを見る<br>
-                50分経過：5th STEPに挑戦中の場合ヒントを見る</p>
-            </div>
+    <!-- ========== イントロ（あらすじ）ページ ========== --><div id="intro-page" class="w-full max-w-lg p-6 md:p-10 transition-opacity duration-500 opacity-0 hidden">
+        <div class="bg-white/5 p-12 rounded-2xl shadow-2xl border-t-8 border-primary-gold flex flex-col items-center justify-center min-h-[400px]">
+            <h1 class="title-serif text-4xl md:text-5xl font-bold text-center mb-6 text-secondary-sepia text-glow">
+                AUCTION
+            </h1>
+            <p class="text-2xl md:text-1xl font-medium text-left text-white mb-10">
+                本サイトでは「AUCTION」内で登場した謎コレクション・プチ謎を全て解くことができます。アイテムが必要な謎は可能な限り実際の状況を再現しています。
+            </p>
             
-            <div class="accordion level-1">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">1st STEP</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>罠一覧の情報を参照しながら謎を解き進めましょう。</p>
-                        </div>
-                    
-            <div class="accordion inner-accordion level-2">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">謎Aのヒント</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>回転板には180度回転するという効果があります。<br><strong>白い迷路の部分が上下逆さまになったものと想定して、迷路を辿りましょう。<br></strong>最初は「お」を通ります。</p>
-                        </div>
-                    
-            <div class="accordion inner-accordion level-3">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">答え</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>ボールは「おせろがこたえ」を通るので、答えは<span class="red-text"><strong>オセロ</strong></span>です。</p>
-                        </div>
-                    
-                </div>
-            </div>
-
-                </div>
-            </div>
-
-            <div class="accordion inner-accordion level-2">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">謎Bのヒント</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>サウンドチェッカーは破裂音を検知する罠です。<br><strong>枠の中で破裂音（例：ぱ・ぴ）を含むものを無視して赤丸を左から読みましょう。</strong></p>
-                        </div>
-                    
-            <div class="accordion inner-accordion level-3">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">答え</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>パン、コップ、ピューレには破裂音が含まれるので、これらを無視します。<br>よって答えは<span class="red-text"><strong>しこみ</strong></span>（仕込み）です。</p>
-                        </div>
-                    
-                </div>
-            </div>
-
-                </div>
-            </div>
-
-            <div class="accordion inner-accordion level-2">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">謎Cのヒント</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>赤いレーザーを射出する罠は<strong>ハイライト</strong>です。左から順に文字を変化させましょう。</p>
-                        </div>
-                    
-            <div class="accordion inner-accordion level-3">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">答え</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>ハイライト→ラ→シ→イシ→オオイシ→オオイタ、と変化します。<br>よって答えは<span class="red-text"><strong>おおいた</strong></span>（大分）です。</p>
-                        </div>
-                    
-                </div>
-            </div>
-
-                </div>
-            </div>
-
-            <div class="accordion inner-accordion level-2">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">謎Dのヒント</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>風船爆弾には赤と青の風船がついているので、赤字と青字の指示文のみを読みます。<br>すると、次の指示は「赤と青の風船を同時に作れ」となります。<br><strong>パネルの中央右にある赤三角形と左下にある青色の雫のような形を使うことで、風船を作ることができます。<br></strong>黒い文字を右から読みましょう。</p>
-                        </div>
-                    
-            <div class="accordion inner-accordion level-3">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">答え</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>パネルと謎Dをこのように配置しましょう。<img src="らざにあ.png" alt="ヒント画像" class="hint-image">答えは<span class="red-text"><strong>ラザニア</strong></span>です。</p>
-                        </div>
-                    
-                </div>
-            </div>
-
-                </div>
-            </div>
-
-            <div class="accordion inner-accordion level-2">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">謎Eのヒント</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>インクの出る罠は<strong>トテモインキ</strong>です。<br>これを「罠の名前」と書かれている枠に埋めたとき、上下の枠が何が入るのかを考えてみましょう。</p>
-                        </div>
-                    
-            <div class="accordion inner-accordion level-3">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">さらにヒント</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>イラストは左からカイト、鉄（てつ）を表しています。<br>上下の枠に何が入るのか考えてみましょう。</p>
-                        </div>
-                    
-            <div class="accordion inner-accordion level-4">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">答え</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>上下の枠には五十音表を一つずつずらした仮名が入ります。<br>よって答えは<span class="red-text"><strong>メカ</strong></span>です。</p>
-                        </div>
-                    
-                </div>
-            </div>
-
-                </div>
-            </div>
-
-                </div>
-            </div>
-
-            <div class="accordion inner-accordion level-2">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">謎Fのヒント</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>左列のイラストは住人（じゅうにん）を表しています。<br>青丸は10個あるので、「じゅう」赤丸は20個で「人」を表しています。<br><strong>赤丸がどのような法則で何を表現しているのか推測しましょう。<br></strong>中央列のイラストは「体重」を表しています。</p>
-                        </div>
-                    
-            <div class="accordion inner-accordion level-3">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">答え</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>赤丸の個数は、矢を射出する罠である「<strong>明かりを裂く一迅の矢は風となりて現世の人類総体を刺す</strong>」の文字数と対応しています。<br>（例：赤丸が1個ならば「明」、2個ならば「か」となる）<br>赤丸2個で「か」、青丸2個で「に」なので答えは<span class="red-text"><strong>かに</strong></span>です。</p>
-                        </div>
-                    
-                </div>
-            </div>
-
-                </div>
-            </div>
-
-            <div class="accordion inner-accordion level-2">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">アンサーシートを埋めたがその先が分からない</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>パネルを重ね、マスの2行目を無視し、右から読むと「カメラに青いタコ見せろ」となります。<br>カメラは資料室内にありますが、「青いタコ」は資料室内にありません。<br><strong>「青いタコ」をどこかで見ていないでしょうか。</strong></p>
-                        </div>
-                    
-            <div class="accordion inner-accordion level-3">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">答え</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p><span class="red-text"><strong>謎Eの中に青いタコのイラストがあります。</strong></span>これを資料室内のカメラに見せましょう。<br>（カメラは入口入ってすぐ手前にあります）</p>
-                        </div>
-                    
-                </div>
-            </div>
-
-                </div>
-            </div>
-
-                </div>
-            </div>
-
-            <div class="accordion level-1">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">2nd STEP</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>検索シートを用いてアイテム名を検索し、詳細情報を入手しましょう。</p>
-                        </div>
-                    
-            <div class="accordion inner-accordion level-2">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">検索する4つのアイテムが分からない</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>検索するのは<strong>マスターキー、リストバンド、三角定規、マスキングテープの4</strong>つです。<br>検索カードを用いて検索KEYを導きましょう。</p>
-                        </div>
-                    
-            <div class="accordion inner-accordion level-3">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">マスターキーの検索方法</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>検索カードに「升（ます）」があります。これと何かもう一つを加えて「マスターキー」という名称になるイラストを探しましょう。</p>
-                        </div>
-                    
-            <div class="accordion inner-accordion level-4">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">検索KEYの答え</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>「升（ます）」と「ターキー」のイラストでマスターキーを検索できます。<br>探す条件（小さい・太い）を満たすカードを集め、アルファベットを並び替えると<span class="red-text"><strong>REPLAY</strong></span>という検索KEYを導くことができます。</p>
-                        </div>
-                    
-                </div>
-            </div>
-
-                </div>
-            </div>
-
-            <div class="accordion inner-accordion level-3">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">リストバンドの検索方法</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>検索カードに「バトン」があります。これと何か2つ加えて「リストバンド」という名称になるイラストを探しましょう。</p>
-                        </div>
-                    
-            <div class="accordion inner-accordion level-4">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">検索KEYの答え</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>「リス」「バトン」「ド」のイラストでリストバンドを検索できます。<br>探す条件（太い・緑・1）を満たすカードを集め、アルファベットを並び替えると<span class="red-text"><strong>FAMILY</strong></span>という検索KEYを導くことができます。</p>
-                        </div>
-                    
-                </div>
-            </div>
-
-                </div>
-            </div>
-
-            <div class="accordion inner-accordion level-3">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">三角定規の検索方法</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>検索カードに「カ行」があります。これと何か2つ加えて「サンカクジョウギ」という名称になるイラストを探しましょう。</p>
-                        </div>
-                    
-            <div class="accordion inner-accordion level-4">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">検索KEYの答え</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>「サン（太陽）」「カ行」「「九時（時計）」のイラストでリストバンドを検索できます。<br>探す条件（大きい・赤・3）を満たすカードを集め、アルファベットを並び替えると<span class="red-text"><strong>SUNDAY</strong></span>という検索KEYを導くことができます。</p>
-                        </div>
-                    
-                </div>
-            </div>
-
-                </div>
-            </div>
-
-            <div class="accordion inner-accordion level-3">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">マスキングテープの検索方法</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>検索カードに「マキ（薪）」があります。これと何か2つ加えて「マスキングテープ」という名称になるイラストを探しましょう。</p>
-                        </div>
-                    
-            <div class="accordion inner-accordion level-4">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">検索KEYの答え</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>「マキ（薪）」「テング（天狗）」「スープ」のイラストでマスキングテープを検索できます。<br>探す条件（小さい・緑・太い）を満たすカードを集め、アルファベットを並び替えると<span class="red-text"><strong>PLAY</strong></span>という検索KEYを導くことができます。</p>
-                        </div>
-                    
-                </div>
-            </div>
-
-                </div>
-            </div>
-
-                </div>
-            </div>
-
-            <div class="accordion inner-accordion level-2">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">アイテム4つ全て検索した後が分からない</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>リストバンドを生成するには5gのものをカイラリーに入れる必要があります。<br><span class="red-text"><strong>マスキングテープを入れましょう。</strong></span></p>
-                        </div>
-                    
-                </div>
-            </div>
-
-            <div class="accordion inner-accordion level-2">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">リストバンドを出力したその先が分からない</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>次に3gのものを入れる必要があります。<br><span class="red-text"><strong>三角定規を入れましょう。</strong></span></p>
-                        </div>
-                    
-                </div>
-            </div>
-
-                </div>
-            </div>
-
-            <div class="accordion level-1">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">3rd STEP</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>本物のスキャナの色を特定するためには、1st STEPで用いた問題用紙6枚、パネル、アンサーシートの計8枚の下部をハサミで切り離す必要があります。<br>謎の内容が変わりますので、解き直しましょう。</p>
-                        </div>
-                    
-            <div class="accordion inner-accordion level-2">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">迷路の謎</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>「回転板の効果を適用させて解くこと」というルールがなくなりますので、迷路をそのまま解きましょう。<br>最初に「や」を通ります。</p>
-                        </div>
-                    
-            <div class="accordion inner-accordion level-3">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">さらにヒント</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>迷路を辿ると「やじるしのさきよめ」となります。<strong>問題用紙の中で矢印はないでしょうか。</strong></p>
-                        </div>
-                    
-            <div class="accordion inner-accordion level-4">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">答え</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>スタートの下にある矢印とゴールの上にある矢印の先を読みます。すると「あうえー」となり、答えは「<span class="red-text"><strong>アウェー</strong></span>」です</p>
-                        </div>
-                    
-                </div>
-            </div>
-
-                </div>
-            </div>
-
-                </div>
-            </div>
-
-            <div class="accordion inner-accordion level-2">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">体重計が描かれている謎</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>「赤丸は矢の出る罠の名前を見よ」という指示と左列のイラストの下部、中列の青丸の一部、右列の青丸の一部が切り落とされました。<br>まずは左のイラストが何を表しているのかを考えてみましょう。</p>
-                        </div>
-                    
-            <div class="accordion inner-accordion level-3">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">さらにヒント</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>左のイラストは「テント」です。青丸は数字をそのまま入れる、つまり10個あるので「テン」になります。<br>同様に中列の青丸は8個あります。<strong>中列のイラストを表すには青丸8個を何と読めば良いのか考えてみましょう。</strong></p>
-                        </div>
-                    
-            <div class="accordion inner-accordion level-4">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">さらにヒント</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>青丸10個で「テン」であることから、青丸8個は「エイト」です。<br>つまり、中列のイラストはウエイトを表しています。<br><strong>赤丸の個数は変わらず左から20個、23個ですので、それぞれ何を表すのかを考えてみましょう。</strong></p>
-                        </div>
-                    
-                </div>
-            </div>
-
-                </div>
-            </div>
-
-            <div class="accordion inner-accordion level-3">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">答え</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>赤丸の数はアルファベット順を表しています。<br>20個ならばT、23ならばWです。つまり、左列から「Tent」「Weight」を青丸と赤丸はそれぞれ表しています。<br>よって答えは<span class="red-text"><strong>BONE</strong></span>（ほね）です。</p>
-                        </div>
-                    
-                </div>
-            </div>
-
-                </div>
-            </div>
-
-            <div class="accordion inner-accordion level-2">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">赤いレーザーの名前を用いる謎</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>赤いレーザーの名前は「ハイライト」です。青四角3つの指示を左から従いましょう。</p>
-                        </div>
-                    
-            <div class="accordion inner-accordion level-3">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">答え</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>ハイライト→ラ→イラ→イロと変化します。よって答えは「<span class="red-text"><strong>いろ</strong></span>」です。</p>
-                        </div>
-                    
-                </div>
-            </div>
-
-                </div>
-            </div>
-
-            <div class="accordion inner-accordion level-2">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">赤や青の三角や月が描かれている謎</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>「パネルの指示に従え」とあります。<br>パネルには「赤と青少ない順に繋げ」と書いてあります。<br><strong>図形の形に着目し、とある数の少ない順に赤と青の図形を繋ぎましょう。</strong></p>
-                        </div>
-                    
-            <div class="accordion inner-accordion level-3">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">答え</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>角の個数の少ない順に赤と青の図形を繋ぎましょう。<br>すると、「こたえはでるた」を通ります。<br>よって答えは「<span class="red-text"><strong>デルタ</strong></span>」です。</p>
-                        </div>
-                    
-                </div>
-            </div>
-
-                </div>
-            </div>
-
-            <div class="accordion inner-accordion level-2">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">インクの出る罠の名前を用いる謎</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>インクの出る罠は「トテモインキ」です。<br>これを「罠の名前」と書かれている枠に埋めたとき、上下の枠が何が入るのかを考えてみましょう。<br>イラストは左からカイト、鉄を表しています。</p>
-                        </div>
-                    
-            <div class="accordion inner-accordion level-3">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">答え</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>上下の枠には五十音表を一つずつずらした仮名が入ります。<br>よって答えは「<span class="red-text"><strong>め</strong></span>」です。</p>
-                        </div>
-                    
-                </div>
-            </div>
-
-                </div>
-            </div>
-
-            <div class="accordion inner-accordion level-2">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">レタス・コップと書かれている謎</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>「全て無視して解け」という部分が切り落とされました。<br>枠の中の単語として破裂音が含まれる枠の赤丸を左から読みましょう。</p>
-                        </div>
-                    
-            <div class="accordion inner-accordion level-3">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">答え</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>答えは「<span class="red-text"><strong>ふらい</strong></span>」です。</p>
-                        </div>
-                    
-                </div>
-            </div>
-
-                </div>
-            </div>
-
-            <div class="accordion inner-accordion level-2">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">アンサーシートの埋め方が分からない</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>アンサーシートの下部を切り落としたとしても埋めるマスの数は変わりません。<br>しかし、<strong>これまでの謎「A〜F」という付番が問題用紙からなくなっているため、必ずしもAだった謎をAのマスに入れる必要はありません。</strong><br>他の埋め方を考えてみましょう。</p>
-                        </div>
-                    
-            <div class="accordion inner-accordion level-3">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">さらにヒント</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>答えは「あうぇー」「BONE」「いろ」「でるた」「め」「ふらい」です。この答えをA〜Fのマスに埋める必要があります。<br>謎の答えを何かに変換することでA~Fのマスに埋めることはできないでしょうか。<br><strong>特に「あうぇー」や「BONE」がよりヒントになるかもしれません。</strong></p>
-                        </div>
-                    
-            <div class="accordion inner-accordion level-4">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">答え</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>各謎の答えをそれぞれ英語にし、A~Fの文字も用いることで、下記のようにアンサーシートを埋めることができます。<br>パネルを重ねたとき、赤三角の先に現れるのは「<span class="red-text"><strong>YELLOW</strong></span>」です。<br>よって、<span class="red-text"><strong>本物のスキャナの色は黄色です。</strong></span></p>
-                        </div>
-                    
-                </div>
-            </div>
-
-                </div>
-            </div>
-
-                </div>
-            </div>
-
-                </div>
-            </div>
-
-            <div class="accordion level-1">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">4th STEP</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p></p>
-                        </div>
-                    
-            <div class="accordion inner-accordion level-2">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">謎ⅰのヒント</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p><span class="red-text"><strong>※この謎は実際にヒントを見て解く謎ではありません。<br></strong></span>もし「ヒントをみて1つ答えよ」にならってヒントを見ている場合は、問題に立ち戻ってみましょう。<br>本当にヒントが必要な場合は、先に読み進めましょう。</p>
-                        </div>
-                    
-            <div class="accordion inner-accordion level-3">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">さらにヒント</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>イラストが表しているのは「ひ」と「つえ」です。<br>問題文と矢印の太くなっている位置に着目しましょう。</p>
-                        </div>
-                    
-            <div class="accordion inner-accordion level-4">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">答え</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>矢印は「ヒントをみて一つ答えよ」という文章自体を表しています。<br>（問題文の１文字目が「ひ」であるため、1行目のイラストは火を表している）<br>よって答えは「<span class="red-text"><strong>ひみつ</strong></span>」です。</p>
-                        </div>
-                    
-                </div>
-            </div>
-
-                </div>
-            </div>
-
-                </div>
-            </div>
-
-            <div class="accordion inner-accordion level-2">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">謎ⅱのヒント</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>左のイラストは「ぴすとる」「かばん」「あわおどり」、右のイラストは「とり」「びん」を表しています。<br><strong>どのような法則でイラストが表されているのか、矢印の位置に着目してみましょう。</strong></p>
-                        </div>
-                    
-            <div class="accordion inner-accordion level-3">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">答え</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>矢印が空欄の上を通るときは五十音表で1つ前、下を通るときは1つ後を表します。<br>よって答えは「<span class="red-text"><strong>あろえ</strong></span>（アロエ）」です</p>
-                        </div>
-                    
-                </div>
-            </div>
-
-                </div>
-            </div>
-
-            <div class="accordion inner-accordion level-2">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">謎ⅲのヒント</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>左のイラストは「あさがお」「はちかい」「なげなわ」、右のイラストは「が」「かち」を表しています。<br><strong>左のイラストの文字数と中央にある四角の数、その上を通る矢印と右のイラストの文字数に着目してみましょう。</strong></p>
-                        </div>
-                    
-            <div class="accordion inner-accordion level-3">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">答え</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>四角にそれぞれ左のイラストの名前が入り、矢印はその位置の文字を読みます。<br>（あさがお、ならば3文字目の「が」を読む。）<br>よって答えは「<span class="red-text"><strong>わなげ</strong></span>」です。</p>
-                        </div>
-                    
-                </div>
-            </div>
-
-                </div>
-            </div>
-
-            <div class="accordion inner-accordion level-2">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">謎ⅳのヒント</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>赤矢印の通る文字を拾うと右のイラストになります。<br>埋まった文字を縦向きに読むと「ひだ？」「ちゅうお？」「み？」となります。<br><strong>埋まった文字の位置関係に注目してみましょう。</strong></p>
-                        </div>
-                    
-            <div class="accordion inner-accordion level-3">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">答え</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>四角には左から「ひだり」「ちゅうおう」「みぎ」と入ります。<br>よって赤矢印が通る文字を拾うと答えは「<span class="red-text"><strong>こうぎ</strong></span>」となります。</p>
-                        </div>
-                    
-                </div>
-            </div>
-
-                </div>
-            </div>
-
-            <div class="accordion inner-accordion level-2">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">謎ⅰ〜謎ⅳを解いた後のヒント</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>全ての答えをアンサーシートに埋め、対応する文字を拾うと「<strong>みぎうえつなげろ</strong>」となります。<br><strong>どこかにある右上を繋げることで単語にならないでしょうか。</strong></p>
-                        </div>
-                    
-            <div class="accordion inner-accordion level-3">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">さらにヒント</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>これまでの謎の右上に「火」「鳥」「蛾（が）」「血」がありました。<br>これを繋げて読むと「一人勝ち」となります。これが現れた5文字の言葉です。<br><strong>「一人勝ち」という状況を紙5枚と机上にあるアイテム（道具）を用いて作り出しましょう。</strong></p>
-                        </div>
-                    
-            <div class="accordion inner-accordion level-4">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">さらにヒント</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>紙を別のものに捉えてみましょう。<br>（紙を加工する必要はありません。）</p>
-                        </div>
-                    
-            <div class="accordion inner-accordion level-5">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">答え</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>紙を「パー」と捉え、「チョキ」を1つ用意することで、じゃんけんを表し、「一人勝ち」という状況を作ることができます。<br>「チョキ」を表す<span class="red-text"><strong>「ハサミ」と「紙5枚」をカイラリーに同時に入れましょう。</strong></span></p>
-                        </div>
-                    
-                </div>
-            </div>
-
-                </div>
-            </div>
-
-                </div>
-            </div>
-
-                </div>
-            </div>
-
-                </div>
-            </div>
-
-            <div class="accordion level-1">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">5th STEP</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>風船爆弾は正しい風船を割ることで解除できますが、その際に出る破裂音でサウンドチェッカーに検知されてしまいます。<br>どうにかしてサウンドチェッカーも解除しなくてはいけません。<br>サウンドチェッカーは破裂音の検知から5秒以内にポールにゴム製の輪っかを置くことで解除ができます。<br><strong>使えそうなゴム製の輪っかをどこかで見たことはないでしょうか。</strong></p>
-                        </div>
-                    
-            <div class="accordion inner-accordion level-2">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">さらにヒント</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>手元に<strong>リストバンド</strong>があります。これをサウンドチェッカーのポールに置くことで解除ができます。<br>しかし、リストバンドを外すと大爆発してしまいます。<br><strong>リストバンドを外す方法はないでしょうか。<br>リストバンドの情報を振り返ってみましょう。</strong></p>
-                        </div>
-                    
-            <div class="accordion inner-accordion level-3">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">さらにヒント</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p><span class="red-text"><strong>リストバンドは破裂音を検知すると5秒間だけ生体認証がオフになるため、外すことができます。</strong></span><br>今、風船爆弾を解除する際に風船を割るため、破裂音が生じます。<br>つまり、風船を割る→リストバンドを外す→サウンドチェッカーのポールに置く、ことで風船爆弾とサウンドチェッカーを解除しつつ、大爆発を免れることができます。<br>しかし、Room01の資料室のサウンドチェッカーのポールは隊長によって破壊されています。<br><strong>サウンドチェッカーを解除する別の手段を考えましょう。</strong></p>
-                        </div>
-                    
-            <div class="accordion inner-accordion level-4">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">さらにヒント</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p><span class="red-text"><strong>Room02にもサウンドチェッカーがあります。</strong></span><br>罠は連鎖的解除ができ、Room02のサウンドチェッカーを解除すれば、こちらのサウンドチェッカーも解除することができます。<br>どうすればRoom02のサウンドチェッカーを解除することができるでしょうか。<br>部屋の構造に着目してみましょう。</p>
-                        </div>
-                    
-            <div class="accordion inner-accordion level-5">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">風船爆弾とサウンドチェッカーを同時に解除する方法の答え</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>資料室の壁の穴は貫通しています。<br>つまり、スキャナの穴に腕を通すことでRoom02のサウンドチェッカーのポールにリストバンドを置くことができます。<br><br>よって風船爆弾とサウンドチェッカー2つの罠を同時に解除するには、<br>①風船爆弾の正しい風船を割る<br>②割れてから5秒以内にリストバンドを外し、スキャンの穴の先にあるRoom02のサウンドチェッカーのポールに置く<br>という手順で解除ができます。<br><br>①を実行するために風船爆弾の正しい風船を特定しましょう。</p>
-                        </div>
-                    
-                </div>
-            </div>
-
-                </div>
-            </div>
-
-                </div>
-            </div>
-
-                </div>
-            </div>
-
-            <div class="accordion inner-accordion level-2">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">風船爆弾の解除方法が分からない①</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>イラストは「てじなし」と「とうだい」を表しています。<br>ピースの向きに注意して「てじなし」と「とうだい」に赤い四角を置きましょう。</p>
-                        </div>
-                    
-            <div class="accordion inner-accordion level-3">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">さらにヒント</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>「てじなし」に赤い四角を置くと下記のようになります。<img src="02.png" alt="ヒント画像" class="hint-image"><br>続いて「とうだい」に赤い四角を置きましょう。<br>（さらにヒントが欲しい場合は「風船爆弾の解除方法が分からない②」を開きましょう。）</p>
-                        </div>
-                    
-                </div>
-            </div>
-
-                </div>
-            </div>
-
-            <div class="accordion inner-accordion level-2">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">風船爆弾の解除方法が分からない②</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>「てじなし」「とうだい」に赤い四角を置くと下記のようになり、「カフェテリア」という言葉を導くことができます。<img src="5th_答え.png" alt="ヒント画像" class="hint-image"><br>研究所の壁に貼られた青い丸にスクリーンに向かって左から1文字ずつ埋めましょう。<br>しかし、壁には3つしか丸がありません。<br><strong>研究所の構造について振り返ってみましょう。</strong><br>（さらにヒントが欲しい場合は「風船爆弾の解除方法が分からない③」を開きましょう。）</p>
-                        </div>
-                    
-                </div>
-            </div>
-
-            <div class="accordion inner-accordion level-2">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">風船爆弾の解除方法が分からない③</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>この研究所は線対称の構造になっています。<br>つまり、青い丸も線対称に配置されているため、研究所全体では青い丸が6つあることになります。<br>スクリーンに向かって左から1文字ずつ埋めましょう。</p>
-                        </div>
-                    
-            <div class="accordion inner-accordion level-3">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">矢の通る高さが分からない</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>矢といえば矢が射出される罠がありました。<br>その罠から射出される矢の高さを読む必要がありますが、資料室にあるその罠の射出部は既に隊長によって破壊されています。<br>他の方法で矢の通る高さを予想できないでしょうか。</p>
-                        </div>
-                    
-            <div class="accordion inner-accordion level-4">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">さらにヒント</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>隊長の背中に矢がまだ刺さっています。矢は音速で飛ぶので矢は射出部からほぼ高さを変えずに隊長の背中に刺さっているものと予想できます。<br>実際に隊長を観察してみましょう。<br>（隊長の矢は繊細なので抜かないであげてください。）</p>
-                        </div>
-                    
-            <div class="accordion inner-accordion level-5">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">答え</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>隊長の背中に刺さっている矢と同じ高さにある青い丸の文字を右から拾うと「あか」となります。<br><span class="red-text"><strong>風船爆弾を解除するには「赤い風船」を割る必要があります。</strong></span></p>
-                        </div>
-                    
-                </div>
-            </div>
-
-                </div>
-            </div>
-
-                </div>
-            </div>
-
-                </div>
-            </div>
-
-                </div>
-            </div>
-
-            <div class="accordion level-1">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">LAST STEP①</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p></p>
-                        </div>
-                    
-            <div class="accordion inner-accordion level-2">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">フローチャートの読み方が分からない</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>カイラリーに何か入れるとRoom01のカイラリーとRoom02のカイラリーそれぞれが何かを出力しようとします。<br>例えば、Room01のカイラリーにりんご（本公演の謎に一切関係のないものとお考えください）を入れたとします。<br>すると、下記の通りとなります。<br><br>Room01のカイラリーの挙動：START→入力するカイラリーと出力するカイラリーは【同じ】→入力するアイテムは【その他】→入力するアイテムは【その他】→出力なし<br><br>Room02のカイラリーの挙動：START→入力するカイラリーと出力するカイラリーは【違う】→入力するカイラリーがあるのは【Room01】→入力するアイテムは【その他】→出力なし<br><br><strong>【重要】何かをカイラリーに入れたらRoom01・Room02のカイラリーどちらもがフローチャートに沿って出力するアイテムが決定されます。</strong></p>
-                        </div>
-                    
-                </div>
-            </div>
-
-                </div>
-            </div>
-
-            <div class="accordion level-1">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">LAST STEP②</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>マスターキーを入手するためには出力カードαを隣の部屋であるRoom02のカイラリーに入れる必要があります。<br>しかし、Room02に直接向かう手段はありません。<br><br>この部屋から出力カードαを動かす手段を考える必要があります。<br>行動記録まとめの隊長のメモにあるように、これまでみなさんはいろいろな違和感に直面していました。<br>下記前提に立ち戻ったとき、これまでどのような違和感があったか考えてみましょう。<br><br>・研究所は線対称の構造であり選別開始時の部屋の状態が同じである<br>・Room02にもカイラリーがあり、出力をしている<br>・この研究所には隊長・副隊長・自分達以外の人間は一人もいない<br>（着目すべき違和感が分からない場合はLAST STEP③のヒントを読みましょう。）<br><br><span class="red-text"><strong>※資料室へ見学しに行く必要はありません。現状持っている資料の情報から出力カードαをカイラリーに入れる手段を導くことができます</strong></span></p>
-                        </div>
-                    
-                </div>
-            </div>
-
-            <div class="accordion level-1">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">LAST STEP③</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>着目すべき違和感は<span class="red-text"><strong><br>①風船爆弾を解除したとき<br>②5th STEPステップシートに記載されている写真<br>③フローチャート<br></strong></span>の3つです。<br>これまでの行動を振り返ってみましょう。<br>部屋の構造や罠の仕組みを踏まえたとき、矛盾している点はないでしょうか。</p>
-                        </div>
-                    
-            <div class="accordion inner-accordion level-2">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">風船爆弾を解除したときの違和感のヒント</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p><strong>本来の解除方法を改めて振り返ってみましょう。</strong><br>また、解除したときに生じた風船の音にも注目してみましょう。<br>（この違和感のみから真相に辿り着くことは難しいため、他の違和感についても考えてみましょう）</p>
-                        </div>
-                    
-                </div>
-            </div>
-
-            <div class="accordion inner-accordion level-2">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">5th STEPステップシートに記載されている写真の違和感のヒント</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p><strong>この研究所は線対称な構造になっているはず</strong>です。そう考えたときにおかしい箇所はないでしょうか。<br>（この違和感のみから真相に辿り着くことは難しいため、他の違和感についても考えてみましょう）</p>
-                        </div>
-                    
-                </div>
-            </div>
-
-            <div class="accordion inner-accordion level-2">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">フローチャートの違和感のヒント</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>フローチャートは隊長がトテモインキを作動させたため、インクだらけになっていて、特に右側が見えません。<br>これまでカイラリーで入力・出力してきた内容を振り返り、<strong>見えていない部分を予測しましょう。</strong></p>
-                        </div>
-                    
-            <div class="accordion inner-accordion level-3">
-                
-                <div class="accordion-header">
-                    <span class="hint-name">さらにヒント</span>
-                </div>
-                <div class="accordion-content">
-                    
-                        <div class="hint-body">
-                            <p>出力アイテムとして「ドローン」がありましたが、フローチャート上に見えていません。<br>一見下記アイテムが「ドローン」のようにも思えますが、本当にそうなのでしょうか。<img src="フローチャート_2.jpg" alt="ヒント画像" class="hint-image"><br><br>これまでの違和感を解決するためには、カイラリーに何を入力し、何が出力されたのか、自分たちの行動と合わせて振り返ってみましょう。<br><span class="red-text"><strong>この先にヒントはありません。</strong></span></p>
-                        </div>
-                    
-                </div>
-            </div>
-
-                </div>
-            </div>
-
-                </div>
-            </div>
-
+            <button onclick="showMainContent()" class="w-full max-w-xs py-4 bg-primary-gold text-gray-900 font-black text-xl rounded-xl shadow-lg hover:bg-secondary-sepia transition duration-300 transform hover:scale-[1.05] active:scale-[0.98] focus:outline-none focus:ring-4 focus:ring-primary-gold focus:ring-opacity-50">
+                はじめる
+            </button>
         </div>
     </div>
-    <script src="script.js"></script>
+    <!-- ============================================== --><!-- ========== メインコンテンツコンテナ (既存の全体) ========== --><div id="main-container" class="w-full max-w-xl p-6 md:p-10 rounded-xl border-4 border-primary-gold transition-all duration-300 riddle-card hidden">
+
+        <h1 class="title-serif text-3xl md:text-5xl font-bold text-center mb-8 text-secondary-sepia text-glow">
+            AUCTION
+        </h1>
+
+        <div class="flex border-b border-gray-700 mb-6">
+            <button id="tab-main" onclick="switchCollection('main')" class="px-4 py-2 text-lg font-semibold text-gray-400 hover:text-white transition duration-200">
+                謎コレクション
+            </button>
+            <button id="tab-mini" onclick="switchCollection('mini')" class="px-4 py-2 text-lg font-semibold text-gray-400 hover:text-white transition duration-200">
+                プチ謎
+            </button>
+        </div>
+        
+        <!-- 謎コレクション目次ページ --><div id="index-page" class="hidden">
+            <div id="progress-summary-main" class="mb-6"></div>
+            <h2 class="text-xl md:text-2xl font-semibold mb-4 text-white">謎コレクション</h2>
+            <div id="riddle-list" class="space-y-3"></div>
+            <p class="text-xs text-gray-400 mt-6 text-center">
+                ※クリア状況はブラウザに自動保存されます。
+            </p>
+            <button onclick="confirmClearProgress('main')" class="mt-4 w-full bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-lg transition duration-200 text-sm">
+                進捗をリセット
+            </button>
+        </div>
+
+        <!-- プチ謎チャレンジページ --><div id="mini-challenge-page" class="hidden text-center">
+            <h2 class="text-xl md:text-2xl font-semibold mb-2 text-secondary-sepia">
+                プチ謎
+            </h2>
+            <div id="mini-progress-summary" class="text-white text-4xl font-extrabold mb-6 p-4 bg-gray-800/50 rounded-xl border border-primary-gold/70 shadow-inner">
+                <!-- 進捗サマリーが入ります --></div>
+            
+            <p class="text-lg font-medium text-gray-400 mb-4">
+                56問のプチ謎の答えをすべて入力し、完全クリアを目指しましょう！
+            </p>
+
+            <div class="flex flex-col gap-4 mb-6">
+                <input type="text" id="mini-answer-input" placeholder="答えを入力（ひらがな）" class="w-full p-3 rounded-lg border-2 border-primary-gold bg-gray-800 text-white focus:outline-none focus:border-secondary-sepia transition duration-200 text-center text-lg">
+                <button onclick="checkMiniAnswer()" id="mini-submit-button" class="bg-secondary-sepia hover:bg-yellow-400 text-gray-900 font-extrabold py-3 px-6 rounded-lg transition duration-200 shadow-xl hover:shadow-2xl active:scale-95">
+                    解答する
+                </button>
+            </div>
+
+            <button onclick="showMiniIndexPage()" class="w-full bg-blue-700 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition duration-200 text-sm mb-4">
+                進捗を確認する（問題番号一覧）
+            </button>
+
+
+            <div id="mini-message-area" class="h-8 mb-6">
+                <p id="mini-feedback-message" class="font-bold text-lg"></p>
+            </div>
+            
+            <button onclick="confirmClearProgress('mini')" class="w-full bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-lg transition duration-200 text-sm">
+                プチ謎の進捗をリセット
+            </button>
+        </div>
+
+        <!-- プチ謎進捗リストページ --><div id="mini-index-page" class="hidden">
+            <button onclick="showMiniChallengePage()" class="text-sm text-secondary-sepia hover:text-white mb-6 flex items-center transition duration-200">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+                </svg>
+                プチ謎解答画面に戻る
+            </button>
+            
+            <h2 class="text-xl md:text-2xl font-semibold mb-4 text-white">
+                プチ謎 進捗リスト (全56問)
+            </h2>
+            <div id="mini-progress-grid" class="grid grid-cols-6 gap-3 justify-center">
+                <!-- 進捗グリッドが入ります --></div>
+            <p id="mini-index-unsolved-count" class="text-center text-lg mt-6 font-medium text-primary-gold"></p>
+        </div>
+        
+        <!-- 個別謎解きページ --><div id="game-container" class="hidden">
+            <button onclick="showIndexPage()" class="text-sm text-secondary-sepia hover:text-white mb-6 flex items-center transition duration-200">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+                </svg>
+                謎コレクション一覧に戻る
+            </button>
+            
+            <p id="level-title" class="text-center text-xl mb-2 font-bold text-secondary-sepia"></p>
+            <p id="multi-answer-status" class="text-center text-sm mb-2 font-medium text-primary-gold hidden"></p>
+            <p id="level-display" class="text-center text-sm mb-6 font-medium text-gray-400"></p>
+            <div id="riddle-text" class="text-center text-xl md:text-2xl font-medium mb-8 p-4 bg-gray-900/30 rounded-lg border border-primary-gold/50 flex flex-col items-center justify-center min-h-[300px]"></div>
+            
+            <div class="flex flex-col md:flex-row gap-4 mb-6">
+                <input type="text" id="answer-input" placeholder="答えを入力（ひらがな）" class="w-full md:w-auto flex-grow p-3 rounded-lg border-2 border-primary-gold bg-gray-800 text-white focus:outline-none focus:border-secondary-sepia transition duration-200">
+                <button onclick="checkAnswer()" id="submit-button" class="bg-secondary-sepia hover:bg-yellow-400 text-gray-900 font-extrabold py-3 px-6 rounded-lg transition duration-200 shadow-xl hover:shadow-2xl active:scale-95">
+                    解答する
+                </button>
+            </div>
+            <div id="message-area" class="text-center h-8">
+                <p id="feedback-message" class="font-bold text-lg"></p>
+            </div>
+        </div>
+
+    </div>
+    <!-- ============================================== --><!-- ========== モーダルコンテナ ========== --><div id="message-modal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center hidden p-4 transition-opacity duration-300 opacity-0">
+        <div class="bg-white text-gray-900 p-8 rounded-xl text-center max-w-sm w-full">
+            <h2 id="modal-title" class="text-3xl font-bold text-green-700 mb-4"></h2>
+            <p id="modal-content" class="mb-6"></p>
+            <div class="flex justify-center gap-4">
+                <button onclick="hideModal()" id="modal-button-confirm" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg">
+                    閉じる
+                </button>
+                <button onclick="hideModal()" id="modal-button-cancel" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg hidden">
+                    キャンセル
+                </button>
+            </div>
+        </div>
+    </div>
+    <!-- ============================================== --><script>
+        // --- 1. データ定義（謎コレクション） ---
+        const mainRiddles = [
+            {
+                level: 1,
+                title: "ANIMAGRAM",
+                question: "全てのお題から1文字抜いて一般的な生き物の名前を作れ。抜いた文字を①から順に読み、答えとなる生き物を導け。",
+                imageUrl: "A_1.png", 
+                answer: "ふたこぶらくだ",
+                hint: "砂漠の生き物です。抜く文字は「さ、い、き、ん、す、か、い、ひ、つ、と、お、の、め、か、い、ど、く、か、ん、りょ、う」のいずれかです。",
+            },
+            { level: 2, title: "Box of Maze", question: "ここに謎が表示されます", imageUrl: "image_690704.jpg", answer: "さいきん", hint: "病気の原因になる小さな生物。" },
+            { level: 3, title: "CUT AND CONNECT", question: "ここに謎が表示されます", imageUrl: "image_69007d.png", answer: "すかい", hint: "空の英語読みです。" },
+            { level: 4, title: "DEVIDED WORLD", question: "ここに謎が表示されます", imageUrl: "image_68f8df.png", answer: "ひっと", hint: "野球用語です。" },
+            { level: 5, title: "ENSHRINE TOWER", question: "ここに謎が表示されます", imageUrl: "image_6883a5.png", answer: "まてんろう", hint: "高いビルディングのこと。" },
+            { level: 6, title: "FORMULA", question: "ここに謎が表示されます", imageUrl: "image_681321.png", answer: "さんせっと", hint: "夕焼けです。" },
+            { 
+                level: 7, 
+                title: "飛行船の絵画", 
+                question: "この謎は「救済タイム」の表示問題です。回答は「きゅうさいたいむ」です。", 
+                imageUrl: "image_67a302.png", 
+                answer: "きゅうさいたいむ", 
+                interactive: false, // 回答不要のフラグ（クリック不可対象）
+                hint: "問題文に答えが書いてあります。" 
+            },
+            { level: 8, title: "G-SQUARE", question: "ここに謎が表示されます", imageUrl: "image_67a2ab.png", answer: "ほういじしん", hint: "方角を知る道具です。" },
+            { level: 9, title: "HARMONY", question: "ここに謎が表示されます", imageUrl: "image_67a288.png", answer: "はっけん", hint: "法律用語です。" },
+            { level: 10, title: "INTERSECT", question: "ここに謎が表示されます", imageUrl: "image_67981a.png", answer: "たいむ", hint: "時間の英語読みです。" },
+            { level: 11, title: "JUDGE", question: "ここに謎が表示されます", imageUrl: "image_5dadff.png", answer: "しんさく", hint: "新しい作品です。" },
+            { level: 12, title: "KNOW AND COLOR", question: "ここに謎が表示されます", imageUrl: "images/riddle_12.png", answer: "さくせす", hint: "成功の英語読みです。" },
+            { level: 13, title: "LUMINOUS", question: "ここに謎が表示されます", imageUrl: "images/riddle_13.png", answer: "かいどくかんりょう", hint: "全て読み終えました。" },
+            // 修正済み: 「じょうよう」を「じょうよ」に修正
+            { level: 14, title: "MEAN", question: "ここに謎が表示されます", answer: ["あんごう", "じょうよ", "とおぼえ", "しののめ"], hint: "4つの言葉が答えになります。", multi: true },
+            { level: 15, title: "NO ORDER", question: "ここに謎が表示されます", imageUrl: "images/riddle_15.png", answer: "まんじゅう", hint: "和菓子の一つです。" },
+            { level: 16, title: "ORIGAMI", question: "ここに謎が表示されます", imageUrl: "images/riddle_16.png", answer: "くーる", hint: "かっこいいの英語読みです。" },
+            { level: 17, title: "POWER OF RIDDLE", question: "ここに謎が表示されます", imageUrl: "images/riddle_17.png", answer: "あめあがり", hint: "雨の後の天気です。" },
+            // --- 追加された No.18 ---
+            { 
+                level: 18, 
+                title: "HEART WARMING", 
+                question: "この謎は、これまでの全ての謎を解いたあなたへの感謝のメッセージです。いつもありがとうございます！", 
+                interactive: false, // 回答不要のフラグ（クリック不可対象）
+                answer: "", 
+                hint: "特にありません。お疲れ様でした！" 
+            },
+        ];
+        
+        // --- 2. データ定義（プチ謎 56問） ---
+        const miniAnswers = [
+            "あーと", "すなとけい", "てんと", "すのー", "わいん", "まねー", "にゅうさつ", "せんちゃく", "ほのお", "げんてん", // 1-10
+            "こいん", "はっと", "ちしき", "さいく", "すかい", "しぜん", "かたち", "はなたば", "わがまま", "たちば", // 11-20
+            "ぎんが", "みぎ", "うぃんぐ", "こわいろ", "かめら", "すいとう", "しんしつ", "えごころ", "いいんちょう", "からー", // 31-40
+            "あくしょん", "あひる", "おなか", "ふぉーかす", "はかせ", "さいん", "りろん", "くちどめ", "てんくう", "えび", // 31-40
+            "へいしき", "まないた", "もうら", "わっくす", "しこみ", "えんじぇる", "どんき", "でぐち", "おるごーる", "せいとう", // 41-50
+            "くじら", "かふぇ", "こううん", "かねかし", "なまえ", "ひつよう" // 51-56 (以前はなまえが重複していたため、最後の一つをひつように変更)
+        ];
+        
+        // --- 3. グローバルステートとストレージキーの定義 ---
+        let currentLevelIndex = 0;
+        let currentCollection = 'main'; // 'main' または 'mini'
+        
+        // **画面遷移ステート**
+        let currentPage = 'intro'; // 'intro' または 'main'
+
+        // メイン謎コレクション用のストレージキー
+        const MAIN_STORAGE_KEY = 'riddle_completion_status'; 
+        const MAIN_MULTI_STORAGE_KEY = 'riddle_multi_answers'; 
+        
+        // プチ謎コレクション用のストレージキー
+        const MINI_COMPLETED_ANSWERS_KEY = 'mini_challenge_answers'; 
+        const MINI_TOTAL_COUNT = miniAnswers.length; 
+
+        // HTML要素の参照
+        const introPage = document.getElementById('intro-page'); // 新しく追加
+        const mainContainer = document.getElementById('main-container'); // メインコンテンツ全体
+
+        const tabMain = document.getElementById('tab-main');
+        const tabMini = document.getElementById('tab-mini');
+        const indexPage = document.getElementById('index-page');
+        const miniChallengePage = document.getElementById('mini-challenge-page');
+        const miniIndexPage = document.getElementById('mini-index-page'); 
+        const gameContainer = document.getElementById('game-container');
+        const riddleList = document.getElementById('riddle-list');
+        const progressSummaryMain = document.getElementById('progress-summary-main');
+        
+        // プチ謎チャレンジモード用要素
+        const miniProgressSummary = document.getElementById('mini-progress-summary');
+        const miniAnswerInput = document.getElementById('mini-answer-input');
+        const miniFeedbackMessage = document.getElementById('mini-feedback-message');
+        const miniProgressGrid = document.getElementById('mini-progress-grid'); 
+        const miniIndexUnsolvedCount = document.getElementById('mini-index-unsolved-count'); 
+        
+        // 個別謎画面用要素 (mainRiddles用)
+        const levelTitle = document.getElementById('level-title');
+        const levelDisplay = document.getElementById('level-display');
+        const multiAnswerStatus = document.getElementById('multi-answer-status');
+        const riddleText = document.getElementById('riddle-text');
+        const answerInput = document.getElementById('answer-input');
+        const feedbackMessage = document.getElementById('feedback-message');
+        
+        // モーダル要素
+        const messageModal = document.getElementById('message-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalContent = document.getElementById('modal-content');
+        const modalButtonConfirm = document.getElementById('modal-button-confirm');
+        const modalButtonCancel = document.getElementById('modal-button-cancel');
+        
+        
+        // --- データ/キー/謎の取得ヘルパー関数 ---
+
+        /**
+         * 現在選択されている謎のデータ配列を返します。
+         */
+        function getCurrentRiddles() {
+            return mainRiddles;
+        }
+
+        /**
+         * 現在選択されているコレクションのストレージキーを返します。
+         */
+        function getStorageKeys() {
+            if (currentCollection === 'main') {
+                return {
+                    completion: MAIN_STORAGE_KEY,
+                    multi: MAIN_MULTI_STORAGE_KEY
+                };
+            } else {
+                return {
+                    completion: MINI_COMPLETED_ANSWERS_KEY, 
+                    multi: null
+                };
+            }
+        }
+        
+        // --- データロード/保存関数 ---
+
+        /**
+         * ゲームの進捗状況をローカルストレージから読み込みます。
+         */
+        function loadProgress() {
+            const key = getStorageKeys().completion;
+            const storedData = localStorage.getItem(key);
+            
+            if (currentCollection === 'mini') {
+                // プチ謎の場合、Setのように重複がないことを前提とするArrayを返す
+                return storedData ? JSON.parse(storedData) : [];
+            } else {
+                // メイン謎の場合、クリア状態のオブジェクトを返す
+                return storedData ? JSON.parse(storedData) : {};
+            }
+        }
+        
+        /**
+         * 複数回答の進捗状況をローカルストレージから読み込みます。
+         */
+        function loadMultiProgress(index) {
+            const key = getStorageKeys().multi;
+            if (!key) return []; 
+            
+            const storedData = localStorage.getItem(key);
+            const allMulti = storedData ? JSON.parse(storedData) : {};
+            return allMulti[index] || []; 
+        }
+
+        /**
+         * メイン謎のクリア状態を保存します。
+         */
+        function saveCompletion(index) {
+            if (currentCollection !== 'main') return;
+            const key = getStorageKeys().completion;
+            const progress = loadProgress();
+            progress[index] = true;
+            localStorage.setItem(key, JSON.stringify(progress));
+        }
+
+        /**
+         * メイン謎の複数回答の進捗を保存します。
+         */
+        function saveMultiAnswer(index, answer) {
+            if (currentCollection !== 'main') return;
+            const key = getStorageKeys().multi;
+            const storedData = localStorage.getItem(key);
+            const allMulti = storedData ? JSON.parse(storedData) : {};
+            
+            if (!allMulti[index]) {
+                allMulti[index] = [];
+            }
+            allMulti[index].push(answer);
+            localStorage.setItem(key, JSON.stringify(allMulti));
+        }
+        
+        /**
+         * プチ謎チャレンジモードで正解した答えを保存します。
+         */
+        function saveMiniAnswer(answer) {
+            let solvedAnswers = loadProgress(); 
+            if (!solvedAnswers.includes(answer)) {
+                solvedAnswers.push(answer);
+                localStorage.setItem(MINI_COMPLETED_ANSWERS_KEY, JSON.stringify(solvedAnswers));
+            }
+            return solvedAnswers.length;
+        }
+
+        // --- 汎用ユーティリティ関数 ---
+
+        /**
+         * テキストを正規化（ひらがな化、空白除去）します。
+         */
+        function normalizeText(text) {
+            if (!text) return '';
+            // 全角を半角に、大文字を小文字に、濁点/半濁点の処理（日本語に特化しないため今回はシンプルな処理）
+            let normalized = String(text).toLowerCase().trim().replace(/[\s　]/g, '');
+            // カタカナをひらがなにする処理 (簡単なもののみ)
+            normalized = normalized.replace(/[\u30a1-\u30f6]/g, function(match) {
+                var chr = match.charCodeAt(0) - 0x60;
+                return String.fromCharCode(chr);
+            });
+            return normalized;
+        }
+
+        /**
+         * 汎用モーダルを表示します。（アラート/コンファームの代替）
+         * @param {string} title - モーダルのタイトル
+         * @param {string} content - モーダルの内容
+         * @param {string} confirmText - 確定ボタンのテキスト
+         * @param {string} confirmClass - 確定ボタンの Tailwind クラス
+         * @param {Function} onConfirm - 確定時のコールバック関数 (オプション)
+         * @param {string} [cancelText] - キャンセルボタンのテキスト (オプション)
+         */
+        function showCustomModal(title, content, confirmText, confirmClass, onConfirm, cancelText) {
+            // 初期状態を非表示に
+            messageModal.classList.add('opacity-0', 'hidden'); 
+
+            // コンテンツのセット
+            modalTitle.innerHTML = title;
+            modalContent.innerHTML = content;
+            modalButtonConfirm.textContent = confirmText || 'OK';
+            modalButtonConfirm.className = `font-bold py-2 px-4 rounded-lg transition ${confirmClass || 'bg-blue-500 hover:bg-blue-600 text-white'}`;
+            
+            // キャンセルボタンの制御
+            if (onConfirm && cancelText) {
+                modalButtonCancel.textContent = cancelText;
+                modalButtonCancel.classList.remove('hidden');
+                modalButtonCancel.onclick = hideModal;
+            } else {
+                modalButtonCancel.classList.add('hidden');
+            }
+
+            // 確定ボタンのイベント設定
+            modalButtonConfirm.onclick = () => {
+                hideModal();
+                if (onConfirm) {
+                    onConfirm();
+                }
+            };
+            
+            // モーダル表示
+            setTimeout(() => {
+                messageModal.classList.remove('hidden');
+                // アニメーションのためわずかな遅延
+                setTimeout(() => {
+                    messageModal.classList.remove('opacity-0');
+                }, 10);
+            }, 0);
+        }
+        
+        /**
+         * モーダルを非表示にします。
+         */
+        function hideModal() {
+            messageModal.classList.add('opacity-0');
+            // アニメーション完了後に hidden クラスを追加
+            setTimeout(() => {
+                messageModal.classList.add('hidden');
+            }, 300);
+        }
+
+        // --- UI表示関数 ---
+        
+        /**
+         * イントロ（あらすじ）画面を表示します。
+         */
+        function showIntroPage() {
+            currentPage = 'intro';
+            mainContainer.classList.add('hidden');
+            introPage.classList.remove('hidden');
+            // フェードインアニメーション
+            setTimeout(() => {
+                introPage.classList.remove('opacity-0');
+            }, 50);
+        }
+
+        /**
+         * メインコンテンツ全体を表示し、謎コレクションの目次画面を初期表示します。
+         */
+        function showMainContent() {
+            currentPage = 'main';
+            // イントロをフェードアウト＆非表示
+            introPage.classList.add('opacity-0');
+            setTimeout(() => {
+                introPage.classList.add('hidden');
+                // メインコンテンツを表示
+                mainContainer.classList.remove('hidden');
+                switchCollection('main'); // 謎コレクションの目次を初期表示
+            }, 300);
+        }
+
+        /**
+         * コレクションを切り替えます。
+         */
+        function switchCollection(collection) {
+            currentCollection = collection;
+            
+            // タブの見た目を更新
+            tabMain.classList.remove('tab-active');
+            tabMini.classList.remove('tab-active');
+            
+            // 全てのゲーム/目次コンテナを非表示に
+            indexPage.classList.add('hidden');
+            gameContainer.classList.add('hidden');
+            miniChallengePage.classList.add('hidden');
+            miniIndexPage.classList.add('hidden'); 
+
+            if (collection === 'main') {
+                tabMain.classList.add('tab-active');
+                showIndexPage();
+            } else {
+                tabMini.classList.add('tab-active');
+                showMiniChallengePage();
+            }
+        }
+
+        /**
+         * メイン謎の目次画面を表示し、謎のリストを生成します。
+         */
+        function showIndexPage() {
+            indexPage.classList.remove('hidden');
+            gameContainer.classList.add('hidden');
+            miniChallengePage.classList.add('hidden');
+            miniIndexPage.classList.add('hidden');
+
+            riddleList.innerHTML = ''; // リストをリセット
+
+            const riddles = getCurrentRiddles(); // メイン謎を取得
+            const progress = loadProgress(); // メイン謎の進捗を取得
+
+            // --- 進捗状況の計算と表示 ---
+            let completedRiddles = 0;
+            // interactiveがfalseのものは進捗の分母に含めないように修正
+            const totalAnswerableRiddles = riddles.filter(r => r.interactive !== false).length; 
+
+            
+            riddles.forEach((riddle, index) => {
+                
+                const isInteractive = riddle.interactive !== false; 
+                let isCompleted = progress[index] || false; 
+
+                // interactiveがfalseの場合は、進捗計算をスキップしてボタン生成に進む
+                if (isInteractive) {
+                    // 複数回答の場合は完全クリアしているかを判定
+                    if (riddle.multi) {
+                        const solvedAnswers = loadMultiProgress(index);
+                        const totalAnswers = Array.isArray(riddle.answer) ? riddle.answer.length : 1;
+                        if (solvedAnswers.length === totalAnswers) {
+                            completedRiddles++;
+                        }
+                    } else if (progress[index]) {
+                        completedRiddles++;
+                    }
+                }
+            });
+
+            // 進捗サマリーの更新
+            progressSummaryMain.innerHTML = `
+                <div class="text-center p-4 bg-gray-800/50 rounded-xl border border-primary-gold/70 shadow-inner">
+                    <p class="text-sm font-medium text-secondary-sepia mb-1">
+                        現在のクリア進捗 (謎コレクション)
+                    </p>
+                    <p class="text-4xl font-extrabold text-white text-glow">
+                        ${completedRiddles} / ${totalAnswerableRiddles} 
+                        <span class="text-lg font-medium text-gray-400">個クリア</span>
+                    </p>
+                </div>
+            `;
+            // ------------------------------------
+
+
+            riddles.forEach((riddle, index) => {
+                const isInteractive = riddle.interactive !== false; 
+                let isCompleted = progress[index] || false; 
+
+                if (riddle.multi) {
+                    const solvedAnswers = loadMultiProgress(index);
+                    const totalAnswers = Array.isArray(riddle.answer) ? riddle.answer.length : 1; 
+                    isCompleted = solvedAnswers.length === totalAnswers;
+                }
+
+                const item = document.createElement('div');
+                
+                let itemClass = `p-4 rounded-lg flex justify-between items-center transition duration-200`;
+                
+                if (isInteractive) {
+                    // 通常の謎
+                    itemClass += ` cursor-pointer ${isCompleted 
+                        ? 'bg-green-900/40 hover:bg-green-900/60 completed' 
+                        : 'bg-gray-900/40 hover:bg-gray-900/60 border border-transparent hover:border-primary-gold/50'}`;
+                    // クリックイベントを設定
+                    item.onclick = () => loadRiddle(index); 
+                } else {
+                    // interactive: false の謎（クリック不可、グレーアウト）
+                    itemClass += ' riddle-info-only'; // 専用クラスでグレーアウトを適用
+                    // クリックイベントを設定しない (ボタンとして機能させない)
+                }
+                
+                item.className = itemClass;
+                
+                let statusText = '';
+                
+                if (isInteractive) { 
+                    // 通常の謎のステータス表示
+                    if (riddle.multi) {
+                        const solvedAnswers = loadMultiProgress(index);
+                        const totalAnswers = Array.isArray(riddle.answer) ? riddle.answer.length : 1; 
+                        const solvedCount = solvedAnswers.length;
+                        
+                        if (solvedCount === totalAnswers) {
+                            statusText = `<span class="text-green-400 font-bold text-sm">【FULL CLEAR】</span>`;
+                        } else if (solvedCount > 0) {
+                            statusText = `<span class="text-primary-gold font-bold text-sm">${solvedCount}/${totalAnswers} CLEAR</span>`;
+                        } else {
+                            statusText = '<span class="text-gray-400 text-sm">未解答</span>';
+                        }
+    
+                    } else {
+                        statusText = isCompleted 
+                            ? '<span class="text-green-400 font-bold text-sm">【CLEAR】</span>'
+                            : '<span class="text-gray-400 text-sm">未解答</span>';
+                    }
+                } 
+                // interactive: false の謎にはステータス表示をしない（statusTextは空のまま）
+
+                item.innerHTML = `
+                    <span class="font-medium text-white">No.${riddle.level}. ${riddle.title}</span>
+                    ${statusText}
+                `;
+                riddleList.appendChild(item);
+            });
+        }
+        
+        /**
+         * プチ謎チャレンジモード画面を表示し、進捗を更新します。
+         */
+        function showMiniChallengePage() {
+            miniChallengePage.classList.remove('hidden');
+            indexPage.classList.add('hidden');
+            gameContainer.classList.add('hidden');
+            miniIndexPage.classList.add('hidden'); 
+            updateMiniProgress();
+        }
+
+        /**
+         * プチ謎 進捗確認画面を表示し、グリッドを生成します。
+         */
+        function showMiniIndexPage() {
+            miniChallengePage.classList.add('hidden');
+            miniIndexPage.classList.remove('hidden');
+            indexPage.classList.add('hidden');
+            gameContainer.classList.add('hidden');
+            generateMiniProgressGrid();
+        }
+        
+        /**
+         * プチ謎チャレンジモードの進捗表示を更新します。
+         */
+        function updateMiniProgress() {
+            const solvedAnswers = loadProgress(); 
+            const solvedCount = solvedAnswers.length;
+            const totalCount = MINI_TOTAL_COUNT;
+            
+            miniProgressSummary.innerHTML = `
+                ${solvedCount} / ${totalCount} 
+                <span class="text-lg font-medium text-gray-400">個クリア</span>
+            `;
+            
+            if (solvedCount === totalCount) {
+                miniAnswerInput.disabled = true;
+                document.getElementById('mini-submit-button').disabled = true;
+                miniAnswerInput.placeholder = "（全問クリア！お見事です！）";
+
+                showCustomModal(
+                    '完全制覇！', 
+                    '56問すべてのプチ謎を解き明かしました！素晴らしい集中力です！',
+                    '閉じる',
+                    'bg-green-600 hover:bg-green-700'
+                );
+            } else {
+                miniAnswerInput.disabled = false;
+                document.getElementById('mini-submit-button').disabled = false;
+                miniAnswerInput.placeholder = "答えを入力（ひらがな）";
+            }
+        }
+
+        /**
+         * プチ謎 進捗確認グリッドを生成します。
+         */
+        function generateMiniProgressGrid() {
+            miniProgressGrid.innerHTML = '';
+            const solvedAnswers = loadProgress(); 
+            const solvedSet = new Set(solvedAnswers); 
+            let unsolvedCount = 0;
+
+            miniAnswers.forEach((answer, index) => {
+                const problemNumber = index + 1; 
+                const isSolved = solvedSet.has(answer); 
+                
+                if (!isSolved) {
+                    unsolvedCount++;
+                }
+
+                const item = document.createElement('div');
+                item.textContent = problemNumber;
+                
+                item.classList.add('mini-progress-item');
+                if (isSolved) {
+                    item.classList.add('mini-progress-solved');
+                } else {
+                    item.classList.add('mini-progress-unsolved');
+                }
+
+                miniProgressGrid.appendChild(item);
+            });
+            
+            miniIndexUnsolvedCount.textContent = `未クリア問題数: ${unsolvedCount} 問`;
+        }
+
+        /**
+         * プチ謎チャレンジモードで解答をチェックします。
+         */
+        function checkMiniAnswer() {
+            const solvedAnswers = loadProgress(); 
+            const userAnswer = normalizeText(miniAnswerInput.value);
+
+            if (!userAnswer) {
+                miniFeedbackMessage.textContent = '答えを入力してください。';
+                miniFeedbackMessage.className = 'font-bold text-lg text-gray-500';
+                setTimeout(() => { miniFeedbackMessage.textContent = '', 1500 });
+                return;
+            }
+
+            if (solvedAnswers.includes(userAnswer)) {
+                miniFeedbackMessage.textContent = `✅ その答え（${userAnswer}）はすでに正解済みです。`;
+                miniFeedbackMessage.className = 'font-bold text-lg text-gray-400';
+                miniAnswerInput.value = '';
+                setTimeout(() => { miniFeedbackMessage.textContent = '', 1500 });
+                return;
+            }
+
+            const isCorrect = miniAnswers.includes(userAnswer);
+
+            if (isCorrect) {
+                const newCount = saveMiniAnswer(userAnswer);
+                
+                miniFeedbackMessage.textContent = `正解！ ${newCount}/${MINI_TOTAL_COUNT} クリア！`; 
+                miniFeedbackMessage.className = 'font-bold text-lg text-green-400';
+                miniAnswerInput.value = ''; 
+                miniAnswerInput.focus();
+                
+                updateMiniProgress(); 
+                
+                setTimeout(() => { miniFeedbackMessage.textContent = '', 1500 });
+                
+            } else {
+                miniFeedbackMessage.textContent = '残念、違います... もう一度考えてみましょう。';
+                miniFeedbackMessage.className = 'font-bold text-lg text-red-400';
+                miniAnswerInput.classList.add('border-red-500'); 
+                
+                setTimeout(() => {
+                    miniFeedbackMessage.textContent = '';
+                    miniAnswerInput.classList.remove('border-red-500');
+                }, 1500);
+            }
+        }
+
+
+        /**
+         * 指定されたインデックスの謎をロードして表示します。（ゲーム画面への切り替え）- メイン謎専用
+         */
+        function loadRiddle(index) {
+            currentLevelIndex = index;
+            
+            indexPage.classList.add('hidden');
+            gameContainer.classList.remove('hidden');
+            miniChallengePage.classList.add('hidden'); 
+            miniIndexPage.classList.add('hidden'); 
+
+            const riddles = getCurrentRiddles();
+            const currentRiddle = riddles[currentLevelIndex];
+            
+            
+            // 画面要素の更新
+            levelTitle.textContent = `【${currentRiddle.title}】`;
+            levelDisplay.textContent = `No.${currentRiddle.level} / ${riddles.filter(r => r.interactive !== false).length}`; // 分母を解答可能な数に変更
+            
+            // 複数回答ステータスエリアの初期化
+            multiAnswerStatus.classList.add('hidden');
+            multiAnswerStatus.textContent = '';
+
+            // RiddleTextエリアの初期化と画像/問題文の挿入
+            riddleText.innerHTML = ''; 
+            
+            // 画像の表示ロジック
+            const mediaUrl = currentRiddle.imageUrl;
+
+            if (mediaUrl) {
+                // 以前のコードで画像ファイル名が直接指定されていたものをそのまま利用
+                const fileIsCodeAccessible = [
+                    'A_1.png', 'image_690704.jpg', 'image_69007d.png', 
+                    'image_68f8df.png', 'image_6883a5.png', 'image_681321.png', 
+                    'image_67a302.png', 'image_67a2ab.png', 'image_67a288.png', 
+                    'image_67981a.png', 'image_5dadff.png', 
+                    // images/で始まるファイル名もリストに追加してエラー回避
+                    "images/riddle_12.png", "images/riddle_13.png", "images/riddle_15.png", "images/riddle_16.png", "images/riddle_17.png"
+                ].includes(mediaUrl);
+                
+                // 画像が存在する場合は<img>タグを生成
+                if (fileIsCodeAccessible) {
+                    const img = document.createElement('img');
+                    img.src = mediaUrl;
+                    img.alt = `謎コレクション No.${currentRiddle.level} の問題画像`;
+                    img.className = "max-w-full h-auto rounded-lg shadow-xl border border-gray-700";
+                    
+                    // エラーが発生したimg要素を新しいdiv要素に置き換える
+                    img.onerror = function() {
+                        const errorDiv = document.createElement('div');
+                        errorDiv.className = "text-xl text-red-400";
+                        errorDiv.textContent = `画像 (${mediaUrl}) の読み込みに失敗しました。`;
+                        this.replaceWith(errorDiv); 
+                    };
+
+                    riddleText.appendChild(img);
+                } else {
+                    // 画像URLがファイル名リストにない場合はプレースホルダー
+                     riddleText.innerHTML += `<div class="text-lg text-gray-400">画像プレースホルダー (${mediaUrl})</div>`;
+                }
+
+                // 画像の下に問題文を配置
+                riddleText.innerHTML += `<p class="mt-4 text-white text-base md:text-xl whitespace-pre-wrap">${currentRiddle.question}</p>`;
+
+            } else {
+                // 画像がない場合は問題文のみ
+                riddleText.innerHTML = `<p class="text-white text-xl md:text-2xl whitespace-pre-wrap">${currentRiddle.question}</p>`;
+            }
+            
+            // 回答入力フォームの初期化
+            answerInput.value = '';
+            feedbackMessage.textContent = '';
+            
+            // 複数回答時の処理
+            if (currentRiddle.multi) {
+                const solvedAnswers = loadMultiProgress(currentLevelIndex);
+                const totalAnswers = Array.isArray(currentRiddle.answer) ? currentRiddle.answer.length : 1;
+                
+                multiAnswerStatus.classList.remove('hidden');
+                multiAnswerStatus.textContent = `複数回答問題: ${solvedAnswers.length}/${totalAnswers} 個解答済み`;
+                
+                // 全て解けているかチェック
+                const isFullCleared = solvedAnswers.length === totalAnswers;
+                
+                if (isFullCleared) {
+                    answerInput.disabled = true;
+                    answerInput.placeholder = "（すべての答えを解答済みです）";
+                    document.getElementById('submit-button').disabled = true;
+                } else {
+                    answerInput.disabled = false;
+                    answerInput.placeholder = "答えを入力（ひらがな）";
+                    document.getElementById('submit-button').disabled = false;
+                }
+            } else {
+                // 通常の単一回答の謎の場合
+                const progress = loadProgress();
+                const isCleared = progress[currentLevelIndex] || false;
+                
+                answerInput.disabled = isCleared;
+                document.getElementById('submit-button').disabled = isCleared;
+                answerInput.placeholder = isCleared ? "（クリア済みです）" : "答えを入力（ひらがな）";
+            }
+        }
+        
+        /**
+         * 不正解時のフィードバックを共通化します。
+         */
+        function showIncorrectFeedback() {
+             feedbackMessage.textContent = '残念、違います... もう一度考えてみましょう。';
+             feedbackMessage.className = 'font-bold text-lg text-red-400';
+             answerInput.classList.add('border-red-500'); 
+                
+             setTimeout(() => {
+                 feedbackMessage.textContent = '';
+                 answerInput.classList.remove('border-red-500');
+             }, 1500);
+        }
+
+        /**
+         * 回答をチェックします。（メイン謎専用）
+         */
+        function checkAnswer() {
+            const currentRiddle = getCurrentRiddles()[currentLevelIndex];
+            const userAnswer = normalizeText(answerInput.value);
+            
+            if (!userAnswer) {
+                feedbackMessage.textContent = '答えを入力してください。';
+                feedbackMessage.className = 'font-bold text-lg text-gray-500';
+                setTimeout(() => { feedbackMessage.textContent = '', 1500 });
+                return;
+            }
+
+            // 複数回答の処理
+            if (currentRiddle.multi) {
+                const correctAnswers = Array.isArray(currentRiddle.answer) ? currentRiddle.answer.map(normalizeText) : [];
+                const solvedAnswers = loadMultiProgress(currentLevelIndex);
+                
+                if (solvedAnswers.includes(userAnswer)) {
+                    feedbackMessage.textContent = `⚠️ その答え（${userAnswer}）はすでに解答済みです。`;
+                    feedbackMessage.className = 'font-bold text-lg text-yellow-500';
+                    answerInput.value = '';
+                    setTimeout(() => { feedbackMessage.textContent = '', 1500 });
+                    return;
+                }
+                
+                if (correctAnswers.includes(userAnswer)) {
+                    // 正解の場合 (複数回答の一部)
+                    saveMultiAnswer(currentLevelIndex, userAnswer);
+                    const newSolvedAnswers = loadMultiProgress(currentLevelIndex);
+                    const totalAnswers = correctAnswers.length;
+
+                    feedbackMessage.textContent = `✨ 正解！ ${newSolvedAnswers.length}/${totalAnswers} 個目の答えを解読しました。`;
+                    feedbackMessage.className = 'font-bold text-lg text-primary-gold';
+                    answerInput.value = '';
+                    answerInput.focus();
+                    
+                    multiAnswerStatus.textContent = `複数回答問題: ${newSolvedAnswers.length}/${totalAnswers} 個解答済み`;
+                    
+                    if (newSolvedAnswers.length === totalAnswers) {
+                        // 全問クリア
+                        showCustomModal(
+                            'FULL CLEAR！', 
+                            `No.${currentRiddle.level} 「${currentRiddle.title}」のすべての答えを解き明かしました！`,
+                            '一覧に戻る',
+                            'bg-green-600 hover:bg-green-700 text-white',
+                            () => showIndexPage()
+                        );
+                        answerInput.disabled = true;
+                        document.getElementById('submit-button').disabled = true;
+                        answerInput.placeholder = "（すべての答えを解答済みです）";
+                    } else {
+                         setTimeout(() => { feedbackMessage.textContent = '', 2500 });
+                    }
+                } else {
+                    // 不正解の場合
+                    showIncorrectFeedback();
+                }
+            } 
+            // 単一回答の処理
+            else {
+                const correctAnswer = normalizeText(currentRiddle.answer);
+                
+                if (userAnswer === correctAnswer) {
+                    // 正解の場合
+                    saveCompletion(currentLevelIndex);
+                    
+                    showCustomModal(
+                        'CLEAR！', 
+                        `No.${currentRiddle.level} 「${currentRiddle.title}」をクリアしました！`,
+                        '一覧に戻る',
+                        'bg-green-600 hover:bg-green-700 text-white',
+                        () => showIndexPage()
+                    );
+                    
+                    answerInput.disabled = true;
+                    document.getElementById('submit-button').disabled = true;
+                    answerInput.placeholder = "（クリア済みです）";
+
+                } else {
+                    // 不正解の場合
+                    showIncorrectFeedback();
+                }
+            }
+        }
+        
+        /**
+         * 進捗リセットの確認モーダルを表示します。
+         * @param {string} collection - 'main' or 'mini'
+         */
+        function confirmClearProgress(collection) {
+            const collectionName = collection === 'main' ? '謎コレクション' : 'プチ謎';
+            const key = collection === 'main' ? MAIN_STORAGE_KEY : MINI_COMPLETED_ANSWERS_KEY;
+            const multiKey = collection === 'main' ? MAIN_MULTI_STORAGE_KEY : null;
+
+            showCustomModal(
+                '⚠️ 進捗リセットの確認',
+                `<p class="text-red-600 font-semibold">本当に${collectionName}の進捗をリセットしますか？</p><p>この操作は元に戻せません。</p>`,
+                'リセットする',
+                'bg-red-500 hover:bg-red-600 text-white',
+                () => {
+                    // 確定時の処理
+                    localStorage.removeItem(key);
+                    if (multiKey) {
+                        localStorage.removeItem(multiKey);
+                    }
+                    showCustomModal(
+                        '✅ リセット完了',
+                        `${collectionName}の進捗をリセットしました。`,
+                        '閉じる',
+                        'bg-green-500 hover:bg-green-600 text-white',
+                        () => {
+                            // UIを更新
+                            if (collection === 'main') {
+                                showIndexPage();
+                            } else {
+                                showMiniChallengePage();
+                            }
+                        }
+                    );
+                },
+                'キャンセル'
+            );
+        }
+
+        // --- 初期化 ---
+        window.onload = function() {
+            // 初期表示はイントロ画面
+            showIntroPage(); 
+        };
+        
+    </script>
 </body>
 </html>
