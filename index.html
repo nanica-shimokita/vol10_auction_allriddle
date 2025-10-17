@@ -5,36 +5,64 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AUCTION コンプリートサイト</title>
     
-<script src="https://cdn.tailwindcss.com"></script>
+    <!-- Tailwind CSSをロード -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        /* グローバルな設定 */
         body {
             font-family: 'Inter', 'Noto Sans JP', sans-serif;
+            /* ダークネイビーのグラデーション背景 */
             background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%); 
             color: #e4e4e4;
             min-height: 100vh; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
         }
-        /* Tailwindの設定を拡張 */
+        /* メインコンテナのデザイン */
         .riddle-card {
-            /* 修正点: main-container の背景色を画像1の暗い背景色に合わせる */
             background-color: #1a202c; /* より暗いネイビー系 */
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.7); /* 影をより深く */
             border-radius: 1rem; /* 少し角を丸く */
+            border: 3px solid #D4AF37; /* ゴールドの枠線 */
+            max-width: 900px; /* PCでの最大幅 */
+            width: 100%;
         }
+        /* タイトルにゴールドの光沢を追加 */
         .text-glow {
-            text-shadow: 0 0 10px rgba(255, 215, 0, 0.7); /* 少し光沢を抑える */
-        }
-        .completed {
-            border-left: 5px solid #059669; 
+            text-shadow: 0 0 12px rgba(255, 215, 0, 0.9), 0 0 5px rgba(255, 215, 0, 0.5); 
+            letter-spacing: 2px;
         }
         /* メインタイトルにセリフ体を適用 */
         .title-serif {
-            font-family: 'Georgia', 'Times New Roman', serif;
+            font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
         }
-        .tab-active {
-            border-bottom: 2px solid #D4AF37; /* アクティブタブの下線 */
-            color: #E0B050;
+
+        /* カスタムカラーとシェイプの定義 */
+        .bg-primary-gold { background-color: #D4AF37; }
+        .border-primary-gold { border-color: #D4AF37; }
+        .text-secondary-sepia { color: #E0B050; } /* 落ち着いたゴールド/セピア */
+
+        /* クリア済みの謎の左側のバー */
+        .completed {
+            border-left: 5px solid #059669; 
+            background-color: #162431; /* わずかに明るい背景 */
         }
-        /* プチ謎の進捗グリッドアイテムのスタイル */
+        /* モーダルの背景 */
+        .modal-overlay {
+            background-color: rgba(0, 0, 0, 0.85);
+            z-index: 50;
+        }
+        /* ボタンのホバーエフェクト */
+        .gold-button {
+            transition: all 0.2s;
+        }
+        .gold-button:hover {
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+            transform: translateY(-2px);
+        }
+        /* ユーザーが追加したプチ謎関連のスタイル */
         .mini-progress-item {
             width: 45px;
             height: 45px;
@@ -57,12 +85,11 @@
             color: #9ca3af; /* 薄い文字色 */
             border: 1px solid #4b5563;
         }
-        /* クリック不可の謎のスタイル */
         .riddle-info-only {
             cursor: default !important;
             opacity: 0.5;
-            background-color: #27272a !important; /* gray-800 のような色 */
-            border-left: 5px solid #52525b !important; /* gray-600 のようなボーダー */
+            background-color: #27272a !important; 
+            border-left: 5px solid #52525b !important; 
         }
     </style>
     <script>
@@ -71,9 +98,7 @@
             theme: {
                 extend: {
                     colors: {
-                        // 重厚なゴールド (プライマリー)
-                        'primary-gold': '#D4AF37', 
-                        // 落ち着いたゴールド/セピア (セカンダリー/テキスト)
+                        'primary-gold': '#D4AF37',
                         'secondary-sepia': '#E0B050',
                     }
                 }
@@ -85,7 +110,9 @@
 
     <!-- ========== イントロ（あらすじ）ページ ========== -->
     <div id="intro-page" class="w-full max-w-lg p-6 md:p-10 transition-opacity duration-500 opacity-0 hidden">
-        <div class="bg-white/5 p-12 rounded-2xl shadow-2xl border-t-8 border-primary-gold flex flex-col items-center justify-center min-h-[400px]">
+        
+        <!-- 初期コンテンツ -->
+        <div id="intro-content" class="bg-white/5 p-12 rounded-2xl shadow-2xl border-t-8 border-primary-gold flex-col items-center justify-center min-h-[400px] flex">
             <h1 class="title-serif text-4xl md:text-5xl font-bold text-center mb-6 text-secondary-sepia text-glow">
                 AUCTION
             </h1>
@@ -96,8 +123,10 @@
             <button onclick="showMainContent()" class="w-full max-w-xs py-4 bg-primary-gold text-gray-900 font-black text-xl rounded-xl shadow-lg hover:bg-secondary-sepia transition duration-300 transform hover:scale-[1.05] active:scale-[0.98] focus:outline-none focus:ring-4 focus:ring-primary-gold focus:ring-opacity-50">
                 はじめる
             </button>
+            <p class="text-sm text-gray-400 mt-4">※進捗はブラウザに保存されます。</p>
         </div>
     </div>
+    <!-- ========================================================== -->
     <!-- ============================================== -->
     <!-- ========== メインコンテンツコンテナ (既存の全体) ========== -->
     <div id="main-container" class="w-full max-w-xl p-6 md:p-10 rounded-xl border-4 border-primary-gold transition-all duration-300 riddle-card hidden">
