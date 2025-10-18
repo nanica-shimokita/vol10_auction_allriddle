@@ -219,19 +219,10 @@
     <!-- ============================================== --><script>
         // --- 1. データ定義（謎コレクション） ---
         const mainRiddles = [
-            {
-                level: 1,
-                title: "ANIMAGRAM",
-                question: "全てのお題から1文字抜いて一般的な生き物の名前を作れ。抜いた文字を①から順に読み、答えとなる生き物を導け。",
-                imageUrl: "A_1.png", 
-                answer: "ふたこぶらくだ",
-                hint: "砂漠の生き物です。抜く文字は「さ、い、き、ん、す、か、い、ひ、つ、と、お、の、め、か、い、ど、く、か、ん、りょ、う」のいずれかです。",
-            },
-            { 
-                level: 2, 
-                title: "Box of Maze", 
-                question: "ここに謎が表示されます", 
-                imageUrl: "B_1.png", 
+            {　level: 1,title: "ANIMAGRAM",imageUrl: "A_1.png", answer: "ふたこぶらくだ"},
+            {  level: 2, title: "Box of Maze", question: "ここに謎が表示されます", 
+                imageUrl: "B_1.png",
+                imageUrl: "B_2.png", 
                 answer: "さいきん",
             },
             { level: 3, title: "CUT AND CONNECT", question: "ここに謎が表示されます", imageUrl: "image_69007d.png", answer: "すかい", hint: "空の英語読みです。" },
@@ -838,7 +829,7 @@
             if (mediaUrl) {
                 // 以前のコードで画像ファイル名が直接指定されていたものをそのまま利用
                 const fileIsCodeAccessible = [
-                    'A_1.png', 'B_1.png', 'image_690704.jpg', 'image_69007d.png', 
+                    'A_1.png', 'B_1.png', 'B_2.png', 'B_3.png', 'B_4.png', 'image_690704.jpg', 'image_69007d.png', 
                     'image_68f8df.png', 'image_6883a5.png', 'image_681321.png', 
                     'image_67a302.png', 'image_67a2ab.png', 'image_67a288.png', 
                     'image_67981a.png', 'image_5dadff.png', 
