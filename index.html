@@ -115,7 +115,7 @@
             <button id="tab-mini" onclick="switchCollection('mini')" class="px-4 py-2 text-lg font-semibold text-gray-400 hover:text-white transition duration-200">
                 プチ謎
             </button>
-             <button id="tab-mini" onclick="switchCollection('mini')" class="px-4 py-2 text-lg font-semibold text-gray-400 hover:text-white transition duration-200">
+             <button id="tab-mini" onclick="switchCollection('info')" class="px-4 py-2 text-lg font-semibold text-gray-400 hover:text-white transition duration-200">
                 各種情報
             </button>
         </div>
@@ -166,7 +166,13 @@
                 プチ謎の進捗をリセット
             </button>
         </div>
+        
+        <!-- 各種情報ページ --><div id="info-page" class="hidden text-center">
+            <h2 class="text-xl md:text-2xl font-semibold mb-2 text-secondary-sepia">
+                カタログ
+            </h2>
 
+        
         <!-- プチ謎進捗リストページ --><div id="mini-index-page" class="hidden">
             <button onclick="showMiniChallengePage()" class="text-sm text-secondary-sepia hover:text-white mb-6 flex items-center transition duration-200">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
