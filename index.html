@@ -66,26 +66,29 @@
 </head>
 <body class="min-h-screen flex items-center justify-center p-4">
 
-    <!-- ========== イントロ（あらすじ）ページ ========== --><div id="intro-page" class="w-full max-w-lg p-6 md:p-10 transition-opacity duration-500 opacity-0 hidden">
-        <div class="bg-white/5 p-12 rounded-2xl shadow-2xl border-t-8 border-primary-gold flex flex-col items-center justify-center min-h-[400px]">
-            <h1 class="title-serif text-4xl md:text-5xl font-bold text-center mb-6 text-secondary-sepia text-glow">
-                AUCTION
-            </h1>
-            <p class="text-1.5xl md:text-1xl font-medium text-left text-white mb-10">
-                本サイトでは「AUCTION」内で登場した謎コレクション・プチ謎を全て解くことができます。
-            </p>
-            <p class="text-1.5xl md:text-1xl font-medium text-left text-white mb-10">
-                アイテムが必要な謎は可能な限り実際の状況を再現しています。
-            </p>
-            <p class="text-1.5xl md:text-1xl font-medium text-left text-white mb-10">
-                本サイトURLの共有は禁止です。
-            </p>
-            
-            <button onclick="showMainContent()" class="w-full max-w-xs py-4 bg-primary-gold text-gray-900 font-black text-xl rounded-xl shadow-lg hover:bg-secondary-sepia transition duration-300 transform hover:scale-[1.05] active:scale-[0.98] focus:outline-none focus:ring-4 focus:ring-primary-gold focus:ring-opacity-50">
-                はじめる
-            </button>
-        </div>
+    <!-- ========== イントロ（あらすじ）ページ ========== -->
+    <div id="intro-page" class="w-full max-w-lg p-6 md:p-10 transition-opacity duration-500 opacity-0 hidden">
+    <div class="bg-white/5 p-12 rounded-2xl shadow-2xl border-t-8 border-primary-gold flex flex-col items-center justify-center min-h-[400px]">
+        <h1 class="title-serif text-4xl md:text-5xl font-bold text-center mb-6 text-secondary-sepia text-glow">
+            AUCTION
+        </h1>
+        <p class="text-lg font-medium text-left text-white mb-6">
+            本サイトでは「AUCTION」内で登場した謎コレクション・プチ謎を全て解くことができます。
+        </p>
+        <p class="text-lg font-medium text-left text-white mb-6">
+            アイテムが必要な謎は可能な限り実際の状況を再現しています。
+        </p>
+        <p class="text-lg font-medium text-left text-white mb-10">
+            **本サイトURLの共有は禁止です。**
+        </p>
+        <button onclick="showMainContent()" 
+                class="w-full max-w-xs py-4 bg-primary-gold text-gray-900 font-black text-xl rounded-xl shadow-lg 
+                       hover:bg-secondary-sepia transition duration-300 transform hover:scale-[1.05] active:scale-[0.98] 
+                       focus:outline-none focus:ring-4 focus:ring-primary-gold focus:ring-opacity-50">
+            はじめる
+        </button>
     </div>
+</div>
     <!-- ============================================== --><!-- ========== メインコンテンツコンテナ (既存の全体) ========== --><div id="main-container" class="w-full max-w-xl p-6 md:p-10 rounded-xl border-4 border-primary-gold transition-all duration-300 riddle-card hidden">
 
         <h1 class="title-serif text-3xl md:text-5xl font-bold text-center mb-8 text-secondary-sepia text-glow">
