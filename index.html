@@ -783,7 +783,21 @@
                 }, 1500);
             }
         }
-
+            // カタログ画像エリアを表示し、解答フォームを隠す
+            function showCatalogImages() {
+                // 謎解き画像と解答フォームを非表示
+                document.getElementById('mini-riddle-view').classList.add('hidden');
+                // カタログ画像エリアを表示
+                document.getElementById('mini-catalog-area').classList.remove('hidden');
+            }
+            
+            // 謎解き画面に戻る（カタログ画像エリアを隠し、解答フォームを表示する）
+            function hideCatalogImages() {
+                // カタログ画像エリアを非表示
+                document.getElementById('mini-catalog-area').classList.add('hidden');
+                // 謎解き画像と解答フォームを表示
+                document.getElementById('mini-riddle-view').classList.remove('hidden');
+            }
 
         /**
          * 指定されたインデックスの謎をロードして表示します。（ゲーム画面への切り替え）- メイン謎専用
