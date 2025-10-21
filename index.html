@@ -527,6 +527,7 @@
             // タブの見た目を更新
             tabMain.classList.remove('tab-active');
             tabMini.classList.remove('tab-active');
+            tabInfo.classList.remove('tab-active');
             
             // 全てのゲーム/目次コンテナを非表示に
             indexPage.classList.add('hidden');
@@ -540,6 +541,9 @@
             } else {
                 tabMini.classList.add('tab-active');
                 showMiniChallengePage();
+            } else {
+                tabInfo.classList.add('tab-active');
+                showInfoPage();
             }
         }
 
