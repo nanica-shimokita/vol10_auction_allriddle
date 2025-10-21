@@ -159,7 +159,8 @@
         </div>
 
         
-        <!-- プチ謎進捗リストページ --><div id="mini-index-page" class="hidden">
+        <!-- プチ謎進捗リストページ -->
+        <div id="mini-index-page" class="hidden">
             <button onclick="showMiniChallengePage()" class="text-sm text-secondary-sepia hover:text-white mb-6 flex items-center transition duration-200">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
                     <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
@@ -175,7 +176,8 @@
             <p id="mini-index-unsolved-count" class="text-center text-lg mt-6 font-medium text-primary-gold"></p>
         </div>
         
-        <!-- 個別謎解きページ --><div id="game-container" class="hidden">
+        <!-- 個別謎解きページ -->
+        <div id="game-container" class="hidden">
             <button onclick="showIndexPage()" class="text-sm text-secondary-sepia hover:text-white mb-6 flex items-center transition duration-200">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
                     <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
@@ -200,7 +202,7 @@
         </div>
 
     </div>
-    <!-- ============================================== --><!-- ========== モーダルコンテナ ========== --><div id="message-modal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center hidden p-4 transition-opacity duration-300 opacity-0">
+    <!-- ========== モーダルコンテナ ========== --><div id="message-modal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center hidden p-4 transition-opacity duration-300 opacity-0">
         <div class="bg-white text-gray-900 p-8 rounded-xl text-center max-w-sm w-full">
             <h2 id="modal-title" class="text-3xl font-bold text-green-700 mb-4"></h2>
             <p id="modal-content" class="mb-6"></p>
@@ -223,14 +225,7 @@
             { level: 4, title: "DEVIDED WORLD", question: "ここに謎が表示されます", imageUrl: "image_68f8df.png", answer: "ひっと"},
             { level: 5, title: "ENSHRINE TOWER", question: "ここに謎が表示されます", imageUrl: "image_6883a5.png", answer: "まてんろう"},
             { level: 6, title: "FORMULA", question: "ここに謎が表示されます", imageUrl: "image_681321.png", answer: "さんせっと"},
-            { level: 7, 
-                title: "飛行船の絵画", 
-                question: "この謎は「救済タイム」の表示問題です。回答は「きゅうさいたいむ」です。", 
-                imageUrl: "image_67a302.png", 
-                answer: "きゅうさいたいむ", 
-                interactive: false, // 回答不要のフラグ（クリック不可対象）
-                hint: "問題文に答えが書いてあります。" 
-            },
+            { level: 7, title: "飛行船の絵画", question: "", imageUrl: "image_67a302.png", answer: "きゅうさいたいむ", interactive: false, // 回答不要のフラグ（クリック不可対象）},
             { level: 8, title: "G-SQUARE", question: "ここに謎が表示されます", imageUrl: "image_67a2ab.png", answer: "ほういじしん"},
             { level: 9, title: "HARMONY", question: "ここに謎が表示されます", imageUrl: "image_67a288.png", answer: "はっけん"},
             { level: 10, title: "INTERSECT", question: "ここに謎が表示されます", imageUrl: "image_67981a.png", answer: "たいむ",},
@@ -246,12 +241,12 @@
         
         // --- 2. データ定義（プチ謎 56問） ---
         const miniAnswers = [
-            "あーと", "すなとけい", "てんと", "すのー", "わいん", "まねー", "にゅうさつ", "せんちゃく", "ほのお", "げんてん", // 1-10
-            "こいん", "はっと", "ちしき", "さいく", "すかい", "しぜん", "かたち", "はなたば", "わがまま", "たちば", // 11-20
+            "あーと", "すなどけい", "てんと", "すのー", "わいん", "まねー", "にゅうさつ", "せんちゃく", "ほのお", "げんてん", // 1-10
+            "こいん", "はっと", "ちしき", "さいく", "さばいばる", "しぜん", "かたち", "はなたば", "わがまま", "たちば", // 11-20
             "ぎんが", "みぎ", "うぃんぐ", "こわいろ", "かめら", "すいとう", "しんしつ", "えごころ", "いいんちょう", "からー", // 31-40
             "あくしょん", "あひる", "おなか", "ふぉーかす", "はかせ", "さいん", "りろん", "くちどめ", "てんくう", "えび", // 31-40
             "へいしき", "まないた", "もうら", "わっくす", "しこみ", "えんじぇる", "どんき", "でぐち", "おるごーる", "せいとう", // 41-50
-            "くじら", "かふぇ", "こううん", "かねかし", "なまえ", "ひつよう" // 51-56 (以前はなまえが重複していたため、最後の一つをひつように変更)
+            "くじら", "かふぇ", "こううん", "かねかし", "なまえ", "ひつよう" // 51-56
         ];
         
         // --- 3. グローバルステートとストレージキーの定義 ---
@@ -270,8 +265,8 @@
         const MINI_TOTAL_COUNT = miniAnswers.length; 
 
         // HTML要素の参照
-        const introPage = document.getElementById('intro-page'); // 新しく追加
-        const mainContainer = document.getElementById('main-container'); // メインコンテンツ全体
+        const introPage = document.getElementById('intro-page'); 
+        const mainContainer = document.getElementById('main-container');
 
         const tabMain = document.getElementById('tab-main');
         const tabMini = document.getElementById('tab-mini');
@@ -303,7 +298,6 @@
         const modalContent = document.getElementById('modal-content');
         const modalButtonConfirm = document.getElementById('modal-button-confirm');
         const modalButtonCancel = document.getElementById('modal-button-cancel');
-        
         
         // --- データ/キー/謎の取得ヘルパー関数 ---
 
