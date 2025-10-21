@@ -401,9 +401,7 @@
          */
         function normalizeText(text) {
             if (!text) return '';
-            // 全角を半角に、大文字を小文字に、濁点/半濁点の処理（日本語に特化しないため今回はシンプルな処理）
             let normalized = String(text).toLowerCase().trim().replace(/[\s　]/g, '');
-            // カタカナをひらがなにする処理 (簡単なもののみ)
             normalized = normalized.replace(/[\u30a1-\u30f6]/g, function(match) {
                 var chr = match.charCodeAt(0) - 0x60;
                 return String.fromCharCode(chr);
