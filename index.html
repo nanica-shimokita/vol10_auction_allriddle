@@ -14,13 +14,12 @@
             min-height: 100vh; 
         }
         .riddle-card {
-            /* 修正点: main-container の背景色を画像1の暗い背景色に合わせる */
-            background-color: #1a202c; /* より暗いネイビー系 */
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.7); /* 影をより深く */
-            border-radius: 1rem; /* 少し角を丸く */
+            background-color: #1a202c; 
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.7);
+            border-radius: 1rem; 
         }
         .text-glow {
-            text-shadow: 0 0 10px rgba(255, 215, 0, 0.7); /* 少し光沢を抑える */
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
         }
         .completed {
             border-left: 5px solid #059669; 
@@ -29,7 +28,7 @@
             font-family: 'Georgia', 'Times New Roman', serif;
         }
         .tab-active {
-            border-bottom: 2px solid #D4AF37; /* アクティブタブの下線 */
+            border-bottom: 2px solid #D4AF37;
             color: #E0B050;
         }
         .mini-progress-item {
@@ -45,24 +44,23 @@
             cursor: default;
         }
         .mini-progress-solved {
-            background-color: #059669; /* エメラルドグリーン */
+            background-color: #059669;
             color: #fff;
-            box-shadow: 0 0 12px rgba(5, 150, 105, 0.8); /* 緑の光沢 */
+            box-shadow: 0 0 12px rgba(5, 150, 105, 0.8);
         }
         .mini-progress-unsolved {
-            background-color: #374151; /* ダークグレー */
-            color: #9ca3af; /* 薄い文字色 */
+            background-color: #374151;
+            color: #9ca3af;
             border: 1px solid #4b5563;
         }
         .riddle-info-only {
             cursor: default !important;
             opacity: 0.5;
-            background-color: #27272a !important; /* gray-800 のような色 */
-            border-left: 5px solid #52525b !important; /* gray-600 のようなボーダー */
+            background-color: #27272a !important;
+            border-left: 5px solid #52525b !important;
         }
     </style>
     <script>
-        // Tailwindのカスタム設定を新しいトーンに合わせて変更
         tailwind.config = {
             theme: {
                 extend: {
