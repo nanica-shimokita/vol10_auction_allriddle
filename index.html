@@ -80,30 +80,15 @@
                 }
             }
         }
- /**
- * 謎解き画面（mini-challenge-page）を表示し、カタログ画面を非表示にする
- */
+
 function showMiniChallengePage() {
-    // ページタイトルを元の名前に戻す
     document.title = "（元のページタイトル）"; // 例: "AUCTION | 謎解き"
-    
-    // 謎解き画面を表示 (hiddenクラスを削除)
     document.getElementById('mini-challenge-page').classList.remove('hidden');
-    // カタログ画面を非表示 (hiddenクラスを追加)
     document.getElementById('catalog-page').classList.add('hidden');
 }
-
-
-/**
- * カタログ画面を表示し、謎解き画面を非表示にする (ボタンの onclick="goToCatalogPage()" に対応)
- */
 function goToCatalogPage() {
-    // ページタイトルを「カタログの情報」に変更する
     document.title = "カタログの情報";
-    
-    // カタログ画面を表示 (hiddenクラスを削除)
     document.getElementById('catalog-page').classList.remove('hidden');
-    // 謎解き画面を非表示 (hiddenクラスを追加)
     document.getElementById('mini-challenge-page').classList.add('hidden');
 }
         
