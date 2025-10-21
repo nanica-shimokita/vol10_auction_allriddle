@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AUCTION コンプリートサイト</title>
+    
+<script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans JP', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%); 
+            color: #e4e4e4;
+            min-height: 100vh; 
+        }
+        .riddle-card {
+            background-color: #1a202c; 
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.7);
+            border-radius: 1rem; 
+        }
+        .text-glow {
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
+        }
+        .completed {
+            border-left: 5px solid #059669; 
+        }
+        .title-serif {
+            font-family: 'Georgia', 'Times New Roman', serif;
+        }
+        .tab-active {
+            border-bottom: 2px solid #D4AF37;
+            color: #E0B050;
+        }
+        .mini-progress-item {
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+            border-radius: 0.5rem;
+            transition: all 0.3s;
+            cursor: default;
+        }
+        .mini-progress-solved {
+            background-color: #059669;
+            color: #fff;
+            box-shadow: 0 0 12px rgba(5, 150, 105, 0.8);
+        }
+        .mini-progress-unsolved {
+            background-color: #374151;
+            color: #9ca3af;
+            border: 1px solid #4b5563;
+        }
+        .riddle-info-only {
+            cursor: default !important;
+            opacity: 0.5;
+            background-color: #27272a !important;
+            border-left: 5px solid #52525b !important;
+        }
+    </style>
+    <script>
+        tailwind.config={theme:{extend:{colors:{'primary-gold':'#D4AF37','secondary-sepia':'#E0B050'}}}}
+    </script>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+
+    <!-- ========== イントロ（あらすじ）ページ ========== -->
+    <div id="intro-page" class="w-full max-w-lg p-6 md:p-10 transition-opacity duration-500 opacity-0 hidden">
+    <div class="bg-white/5 p-12 rounded-2xl shadow-2xl border-t-8 border-primary-gold flex flex-col items-center justify-center min-h-[400px]">
+        <h1 class="title-serif text-4xl md:text-5xl font-bold text-center mb-6 text-secondary-sepia text-glow">
+            AUCTION
+        </h1>
+        <p class="text-lg font-medium text-left text-white mb-6">
+            本サイトでは「AUCTION」内で登場した謎コレクション・プチ謎を全て解くことができます。
+        </p>
+        <p class="text-lg font-medium text-left text-white mb-6">
+            アイテムが必要な謎は可能な限り実際の状況を再現しています。
+        </p>
+        <p class="text-lg font-medium text-left text-white mb-10">
+            本サイトURLの共有は禁止です。
+        </p>
+        <button onclick="showMainContent()" 
+                class="w-full max-w-xs py-4 bg-primary-gold text-gray-900 font-black text-xl rounded-xl shadow-lg 
+                       hover:bg-secondary-sepia transition duration-300 transform hover:scale-[1.05] active:scale-[0.98] 
+                       focus:outline-none focus:ring-4 focus:ring-primary-gold focus:ring-opacity-50">
+            はじめる
+        </button>
+    </div>
+</div>
+    <!-- ========== メインコンテンツコンテナ (既存の全体) ========== -->
+    <div id="main-container" class="w-full max-w-xl p-6 md:p-10 rounded-xl border-4 border-primary-gold transition-all duration-300 riddle-card hidden">
+        <h1 class="title-serif text-3xl md:text-5xl font-bold text-center mb-8 text-secondary-sepia text-glow">
+            AUCTION
+        </h1>
+
+        <div class="flex border-b border-gray-700 mb-6">
+            <button id="tab-main" onclick="switchCollection('main')" class="px-4 py-2 text-lg font-semibold text-gray-400 hover:text-white transition duration-200">
+                謎コレクション
+            </button>
+            <button id="tab-mini" onclick="switchCollection('mini')" class="px-4 py-2 text-lg font-semibold text-gray-400 hover:text-white transition duration-200">
+                プチ謎
+            </button>
+        </div>
+        
+        <!-- 謎コレクション目次ページ -->
+        <div id="index-page" class="hidden">
+            <div id="progress-summary-main" class="mb-6"></div>
+            <h2 class="text-xl md:text-2xl font-semibold mb-4 text-white">
+                謎コレクション
+            </h2>
+            <div id="riddle-list" class="space-y-3"></div>
+            <p class="text-xs text-gray-400 mt-6 text-center">
+                ※クリア状況はブラウザに自動保存されます。
+            </p>
+            <button onclick="confirmClearProgress('main')" class="mt-4 w-full bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-lg transition duration-200 text-sm">
+                進捗をリセット
+            </button>
+        </div>
+
+        <!-- プチ謎ページ -->
+        <div id="mini-challenge-page" class="hidden text-center">
+            <h2 class="text-xl md:text-2xl font-semibold mb-2 text-secondary-sepia">
+                プチ謎
+            </h2>
+            <div id="mini-progress-summary" class="text-white text-4xl font-extrabold mb-6 p-4 bg-gray-800/50 rounded-xl border border-primary-gold/70 shadow-inner">
+                <!-- 進捗サマリー --></div>
+             <button onclick="showMiniIndexPage()" class="w-full bg-red-800 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200 text-sm mb-4">
+                カタログを見る
+            </button>
+            <img src="プチ謎_1.png" alt="プチ謎画像" class="mx-auto my-6 max-w-full rounded-lg shadow-xl" />
+            <img src="プチ謎_2.png" alt="プチ謎画像" class="mx-auto my-6 max-w-full rounded-lg shadow-xl" />
+            <img src="プチ謎_3.png" alt="プチ謎画像" class="mx-auto my-6 max-w-full rounded-lg shadow-xl" />
+            <img src="プチ謎_4.png" alt="プチ謎画像" class="mx-auto my-6 max-w-full rounded-lg shadow-xl" />
+            <p class="text-lg font-medium text-gray-400 mb-4">
+                56問のプチ謎の答えをすべて入力し、完全クリアを目指しましょう！
+            </p>
+
+            <div class="flex flex-col gap-4 mb-6">
+                <input type="text" id="mini-answer-input" placeholder="答えを入力（ひらがな）" class="w-full p-3 rounded-lg border-2 border-primary-gold bg-gray-800 text-white focus:outline-none focus:border-secondary-sepia transition duration-200 text-center text-lg">
+                <button onclick="checkMiniAnswer()" id="mini-submit-button" class="bg-secondary-sepia hover:bg-yellow-400 text-gray-900 font-extrabold py-3 px-6 rounded-lg transition duration-200 shadow-xl hover:shadow-2xl active:scale-95">
+                    解答する
+                </button>
+            </div>
+
+            <button onclick="showMiniIndexPage()" class="w-full bg-blue-700 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition duration-200 text-sm mb-4">
+                進捗を確認する（問題番号一覧）
+            </button>
+           
+
+            <div id="mini-message-area" class="h-8 mb-6">
+                <p id="mini-feedback-message" class="font-bold text-lg"></p>
+            </div>
+            
+            <button onclick="confirmClearProgress('mini')" class="w-full bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-lg transition duration-200 text-sm">
+                プチ謎の進捗をリセット
+            </button>
+        </div>
+
+        
+        <!-- プチ謎進捗リストページ -->
+        <div id="mini-index-page" class="hidden">
+            <button onclick="showMiniChallengePage()" class="text-sm text-secondary-sepia hover:text-white mb-6 flex items-center transition duration-200">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+                </svg>
+                プチ謎解答画面に戻る
+            </button>
+            
+            <h2 class="text-xl md:text-2xl font-semibold mb-4 text-white">
+                プチ謎 進捗リスト (全56問)
+            </h2>
+            <div id="mini-progress-grid" class="grid grid-cols-6 gap-3 justify-center">
+                <!-- 進捗グリッドが入ります --></div>
+            <p id="mini-index-unsolved-count" class="text-center text-lg mt-6 font-medium text-primary-gold"></p>
+        </div>
+        
+        <!-- 個別謎解きページ -->
+        <div id="game-container" class="hidden">
+            <button onclick="showIndexPage()" class="text-sm text-secondary-sepia hover:text-white mb-6 flex items-center transition duration-200">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+                </svg>
+                謎コレクション一覧に戻る
+            </button>
+            
+            <p id="level-title" class="text-center text-xl mb-2 font-bold text-secondary-sepia"></p>
+            <p id="multi-answer-status" class="text-center text-sm mb-2 font-medium text-primary-gold hidden"></p>
+            <p id="level-display" class="text-center text-sm mb-6 font-medium text-gray-400"></p>
+            <div id="riddle-text" class="text-center text-xl md:text-2xl font-medium mb-8 p-4 bg-gray-900/30 rounded-lg border border-primary-gold/50 flex flex-col items-center justify-center min-h-[300px]"></div>
+            
+            <div class="flex flex-col md:flex-row gap-4 mb-6">
+                <input type="text" id="answer-input" placeholder="答えを入力（ひらがな）" class="w-full md:w-auto flex-grow p-3 rounded-lg border-2 border-primary-gold bg-gray-800 text-white focus:outline-none focus:border-secondary-sepia transition duration-200">
+                <button onclick="checkAnswer()" id="submit-button" class="bg-secondary-sepia hover:bg-yellow-400 text-gray-900 font-extrabold py-3 px-6 rounded-lg transition duration-200 shadow-xl hover:shadow-2xl active:scale-95">
+                    解答する
+                </button>
+            </div>
+            <div id="message-area" class="text-center h-8">
+                <p id="feedback-message" class="font-bold text-lg"></p>
+            </div>
+        </div>
+
+    </div>
+    <!-- ========== モーダルコンテナ ========== --><div id="message-modal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center hidden p-4 transition-opacity duration-300 opacity-0">
+        <div class="bg-white text-gray-900 p-8 rounded-xl text-center max-w-sm w-full">
+            <h2 id="modal-title" class="text-3xl font-bold text-green-700 mb-4"></h2>
+            <p id="modal-content" class="mb-6"></p>
+            <div class="flex justify-center gap-4">
+                <button onclick="hideModal()" id="modal-button-confirm" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg">
+                    閉じる
+                </button>
+                <button onclick="hideModal()" id="modal-button-cancel" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg hidden">
+                    キャンセル
+                </button>
+            </div>
+        </div>
+    </div>
+    <!-- ============================================== --><script>
+        // --- 1. データ定義（謎コレクション） ---
+        const mainRiddles = [
+            {　level: 1,title: "ANIMAGRAM",question: "", imageUrl: "A_1.png", answer: "ふたこぶらくだ"},
+            {  level: 2, title: "Box of Maze", question: "ここに謎が表示されます？", answer: "さいきん"},
+            { level: 3, title: "CUT AND CONNECT", question: "", imageUrl: "C_1.png", answer: "すかい"},
+            { level: 4, title: "DEVIDED WORLD", question: "ここに謎が表示されます", imageUrl: "image_68f8df.png", answer: "ひっと"},
+            { level: 5, title: "ENSHRINE TOWER", question: "ここに謎が表示されます", imageUrl: "image_6883a5.png", answer: "まてんろう"},
+            { level: 6, title: "FORMULA", question: "ここに謎が表示されます", imageUrl: "image_681321.png", answer: "さんせっと"},
+            { level: 7, title: "飛行船の絵画", question: "", imageUrl: "image_67a302.png", answer: "きゅうさいたいむ", interactive: false, // 回答不要のフラグ（クリック不可対象）},
+            { level: 8, title: "G-SQUARE", question: "ここに謎が表示されます", imageUrl: "image_67a2ab.png", answer: "ほういじしん"},
+            { level: 9, title: "HARMONY", question: "ここに謎が表示されます", imageUrl: "image_67a288.png", answer: "はっけん"},
+            { level: 10, title: "INTERSECT", question: "ここに謎が表示されます", imageUrl: "image_67981a.png", answer: "たいむ",},
+            { level: 11, title: "JUDGE", question: "ここに謎が表示されます", imageUrl: "image_5dadff.png", answer: "しんさく",},
+            { level: 12, title: "KNOW AND COLOR", question: "ここに謎が表示されます", imageUrl: "images/riddle_12.png", answer: "さくせす"},
+            { level: 13, title: "LUMINOUS", question: "ここに謎が表示されます", imageUrl: "images/riddle_13.png", answer: "かいどくかんりょう"},
+            { level: 14, title: "MEAN", question: "ここに謎が表示されます", answer: ["あんごう", "じょうよ", "とおぼえ", "しののめ"], multi: true },
+            { level: 15, title: "NO ORDER", question: "ここに謎が表示されます", imageUrl: "images/riddle_15.png", answer: "まんじゅう"},
+            { level: 16, title: "ORIGAMI", question: "ここに謎が表示されます", imageUrl: "images/riddle_16.png", answer: "くーる"},
+            { level: 17, title: "POWER OF RIDDLE", question: "ここに謎が表示されます", imageUrl: "images/riddle_17.png", answer: "あめあがり"},
+            { level: 18, title: "HEART WARMING", question: "", interactive: false, // 回答不要のフラグ（クリック不可対象）answer: ""},
+        ];
+        
+        // --- 2. データ定義（プチ謎 56問） ---
+        const miniAnswers = [
+            "あーと", "すなどけい", "てんと", "すのー", "わいん", "まねー", "にゅうさつ", "せんちゃく", "ほのお", "げんてん", // 1-10
+            "こいん", "はっと", "ちしき", "さいく", "さばいばる", "しぜん", "かたち", "はなたば", "わがまま", "たちば", // 11-20
+            "ぎんが", "みぎ", "うぃんぐ", "こわいろ", "かめら", "すいとう", "しんしつ", "えごころ", "いいんちょう", "からー", // 31-40
+            "あくしょん", "あひる", "おなか", "ふぉーかす", "はかせ", "さいん", "りろん", "くちどめ", "てんくう", "えび", // 31-40
+            "へいしき", "まないた", "もうら", "わっくす", "しこみ", "えんじぇる", "どんき", "でぐち", "おるごーる", "せいとう", // 41-50
+            "くじら", "かふぇ", "こううん", "かねかし", "なまえ", "ひつよう" // 51-56
+        ];
+        
+        // --- 3. グローバルステートとストレージキーの定義 ---
+        let currentLevelIndex = 0;
+        let currentCollection = 'main'; // 'main' または 'mini'
+        
+        // **画面遷移ステート**
+        let currentPage = 'intro'; // 'intro' または 'main'
+
+        // メイン謎コレクション用のストレージキー
+        const MAIN_STORAGE_KEY = 'riddle_completion_status'; 
+        const MAIN_MULTI_STORAGE_KEY = 'riddle_multi_answers'; 
+        
+        // プチ謎コレクション用のストレージキー
+        const MINI_COMPLETED_ANSWERS_KEY = 'mini_challenge_answers'; 
+        const MINI_TOTAL_COUNT = miniAnswers.length; 
+
+        // HTML要素の参照
+        const introPage = document.getElementById('intro-page'); 
+        const mainContainer = document.getElementById('main-container');
+
+        const tabMain = document.getElementById('tab-main');
+        const tabMini = document.getElementById('tab-mini');
+        const indexPage = document.getElementById('index-page');
+        const miniChallengePage = document.getElementById('mini-challenge-page');
+        const miniIndexPage = document.getElementById('mini-index-page'); 
+        const gameContainer = document.getElementById('game-container');
+        const riddleList = document.getElementById('riddle-list');
+        const progressSummaryMain = document.getElementById('progress-summary-main');
+        
+        // プチ謎チャレンジモード用要素
+        const miniProgressSummary = document.getElementById('mini-progress-summary');
+        const miniAnswerInput = document.getElementById('mini-answer-input');
+        const miniFeedbackMessage = document.getElementById('mini-feedback-message');
+        const miniProgressGrid = document.getElementById('mini-progress-grid'); 
+        const miniIndexUnsolvedCount = document.getElementById('mini-index-unsolved-count'); 
+        
+        // 個別謎画面用要素 (mainRiddles用)
+        const levelTitle = document.getElementById('level-title');
+        const levelDisplay = document.getElementById('level-display');
+        const multiAnswerStatus = document.getElementById('multi-answer-status');
+        const riddleText = document.getElementById('riddle-text');
+        const answerInput = document.getElementById('answer-input');
+        const feedbackMessage = document.getElementById('feedback-message');
+        
+        // モーダル要素
+        const messageModal = document.getElementById('message-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalContent = document.getElementById('modal-content');
+        const modalButtonConfirm = document.getElementById('modal-button-confirm');
+        const modalButtonCancel = document.getElementById('modal-button-cancel');
+        
+        // --- データ/キー/謎の取得ヘルパー関数 ---
+
+        /**
+         * 現在選択されている謎のデータ配列を返します。
+         */
+        function getCurrentRiddles() {
+            return mainRiddles;
+        }
+
+        /**
+         * 現在選択されているコレクションのストレージキーを返します。
+         */
+        function getStorageKeys() {
+            if (currentCollection === 'main') {
+                return {
+                    completion: MAIN_STORAGE_KEY,
+                    multi: MAIN_MULTI_STORAGE_KEY
+                };
+            } else {
+                return {
+                    completion: MINI_COMPLETED_ANSWERS_KEY, 
+                    multi: null
+                };
+            }
+        }
+        
+        // --- データロード/保存関数 ---
+
+        /**
+         * ゲームの進捗状況をローカルストレージから読み込みます。
+         */
+        function loadProgress() {
+            const key = getStorageKeys().completion;
+            const storedData = localStorage.getItem(key);
+            
+            if (currentCollection === 'mini') {
+                // プチ謎の場合、Setのように重複がないことを前提とするArrayを返す
+                return storedData ? JSON.parse(storedData) : [];
+            } else {
+                // メイン謎の場合、クリア状態のオブジェクトを返す
+                return storedData ? JSON.parse(storedData) : {};
+            }
+        }
+        
+        /**
+         * 複数回答の進捗状況をローカルストレージから読み込みます。
+         */
+        function loadMultiProgress(index) {
+            const key = getStorageKeys().multi;
+            if (!key) return []; 
+            
+            const storedData = localStorage.getItem(key);
+            const allMulti = storedData ? JSON.parse(storedData) : {};
+            return allMulti[index] || []; 
+        }
+
+        /**
+         * メイン謎のクリア状態を保存します。
+         */
+        function saveCompletion(index) {
+            if (currentCollection !== 'main') return;
+            const key = getStorageKeys().completion;
+            const progress = loadProgress();
+            progress[index] = true;
+            localStorage.setItem(key, JSON.stringify(progress));
+        }
+
+        /**
+         * メイン謎の複数回答の進捗を保存します。
+         */
+        function saveMultiAnswer(index, answer) {
+            if (currentCollection !== 'main') return;
+            const key = getStorageKeys().multi;
+            const storedData = localStorage.getItem(key);
+            const allMulti = storedData ? JSON.parse(storedData) : {};
+            
+            if (!allMulti[index]) {
+                allMulti[index] = [];
+            }
+            allMulti[index].push(answer);
+            localStorage.setItem(key, JSON.stringify(allMulti));
+        }
+        
+        /**
+         * プチ謎チャレンジモードで正解した答えを保存します。
+         */
+        function saveMiniAnswer(answer) {
+            let solvedAnswers = loadProgress(); 
+            if (!solvedAnswers.includes(answer)) {
+                solvedAnswers.push(answer);
+                localStorage.setItem(MINI_COMPLETED_ANSWERS_KEY, JSON.stringify(solvedAnswers));
+            }
+            return solvedAnswers.length;
+        }
+
+        // --- 汎用ユーティリティ関数 ---
+
+        /**
+         * テキストを正規化（ひらがな化、空白除去）します。
+         */
+        function normalizeText(text) {
+            if (!text) return '';
+            let normalized = String(text).toLowerCase().trim().replace(/[\s　]/g, '');
+            normalized = normalized.replace(/[\u30a1-\u30f6]/g, function(match) {
+                var chr = match.charCodeAt(0) - 0x60;
+                return String.fromCharCode(chr);
+            });
+            return normalized;
+        }
+
+        /**
+         * 汎用モーダルを表示します。（アラート/コンファームの代替）
+         * @param {string} title - モーダルのタイトル
+         * @param {string} content - モーダルの内容
+         * @param {string} confirmText - 確定ボタンのテキスト
+         * @param {string} confirmClass - 確定ボタンの Tailwind クラス
+         * @param {Function} onConfirm - 確定時のコールバック関数 (オプション)
+         * @param {string} [cancelText] - キャンセルボタンのテキスト (オプション)
+         */
+        function showCustomModal(title, content, confirmText, confirmClass, onConfirm, cancelText) {
+            // 初期状態を非表示に
+            messageModal.classList.add('opacity-0', 'hidden'); 
+
+            // コンテンツのセット
+            modalTitle.innerHTML = title;
+            modalContent.innerHTML = content;
+            modalButtonConfirm.textContent = confirmText || 'OK';
+            modalButtonConfirm.className = `font-bold py-2 px-4 rounded-lg transition ${confirmClass || 'bg-blue-500 hover:bg-blue-600 text-white'}`;
+            
+            // キャンセルボタンの制御
+            if (onConfirm && cancelText) {
+                modalButtonCancel.textContent = cancelText;
+                modalButtonCancel.classList.remove('hidden');
+                modalButtonCancel.onclick = hideModal;
+            } else {
+                modalButtonCancel.classList.add('hidden');
+            }
+
+            // 確定ボタンのイベント設定
+            modalButtonConfirm.onclick = () => {
+                hideModal();
+                if (onConfirm) {
+                    onConfirm();
+                }
+            };
+            
+            // モーダル表示
+            setTimeout(() => {
+                messageModal.classList.remove('hidden');
+                // アニメーションのためわずかな遅延
+                setTimeout(() => {
+                    messageModal.classList.remove('opacity-0');
+                }, 10);
+            }, 0);
+        }
+        
+        /**
+         * モーダルを非表示にします。
+         */
+        function hideModal() {
+            messageModal.classList.add('opacity-0');
+            // アニメーション完了後に hidden クラスを追加
+            setTimeout(() => {
+                messageModal.classList.add('hidden');
+            }, 300);
+        }
+
+        // --- UI表示関数 ---
+        
+        /**
+         * イントロ（あらすじ）画面を表示します。
+         */
+        function showIntroPage() {
+            currentPage = 'intro';
+            mainContainer.classList.add('hidden');
+            introPage.classList.remove('hidden');
+            // フェードインアニメーション
+            setTimeout(() => {
+                introPage.classList.remove('opacity-0');
+            }, 50);
+        }
+
+        /**
+         * メインコンテンツ全体を表示し、謎コレクションの目次画面を初期表示します。
+         */
+        function showMainContent() {
+            currentPage = 'main';
+            // イントロをフェードアウト＆非表示
+            introPage.classList.add('opacity-0');
+            setTimeout(() => {
+                introPage.classList.add('hidden');
+                // メインコンテンツを表示
+                mainContainer.classList.remove('hidden');
+                switchCollection('main'); // 謎コレクションの目次を初期表示
+            }, 300);
+        }
+
+        /**
+         * コレクションを切り替えます。
+         */
+        function switchCollection(collection) {
+            currentCollection = collection;
+            
+            // タブの見た目を更新
+            tabMain.classList.remove('tab-active');
+            tabMini.classList.remove('tab-active');
+            
+            // 全てのゲーム/目次コンテナを非表示に
+            indexPage.classList.add('hidden');
+            gameContainer.classList.add('hidden');
+            miniChallengePage.classList.add('hidden');
+            miniIndexPage.classList.add('hidden'); 
+
+            if (collection === 'main') {
+                tabMain.classList.add('tab-active');
+                showIndexPage();
+            } else {
+                tabMini.classList.add('tab-active');
+                showMiniChallengePage();
+            }
+        }
+
+        /**
+         * メイン謎の目次画面を表示し、謎のリストを生成します。
+         */
+        function showIndexPage() {
+            indexPage.classList.remove('hidden');
+            gameContainer.classList.add('hidden');
+            miniChallengePage.classList.add('hidden');
+            miniIndexPage.classList.add('hidden');
+
+            riddleList.innerHTML = ''; // リストをリセット
+
+            const riddles = getCurrentRiddles(); // メイン謎を取得
+            const progress = loadProgress(); // メイン謎の進捗を取得
+
+            // --- 進捗状況の計算と表示 ---
+            let completedRiddles = 0;
+            // interactiveがfalseのものは進捗の分母に含めないように修正
+            const totalAnswerableRiddles = riddles.filter(r => r.interactive !== false).length; 
+
+            
+            riddles.forEach((riddle, index) => {
+                
+                const isInteractive = riddle.interactive !== false; 
+                let isCompleted = progress[index] || false; 
+
+                // interactiveがfalseの場合は、進捗計算をスキップしてボタン生成に進む
+                if (isInteractive) {
+                    // 複数回答の場合は完全クリアしているかを判定
+                    if (riddle.multi) {
+                        const solvedAnswers = loadMultiProgress(index);
+                        const totalAnswers = Array.isArray(riddle.answer) ? riddle.answer.length : 1;
+                        if (solvedAnswers.length === totalAnswers) {
+                            completedRiddles++;
+                        }
+                    } else if (progress[index]) {
+                        completedRiddles++;
+                    }
+                }
+            });
+
+            // 進捗サマリーの更新
+            progressSummaryMain.innerHTML = `
+                <div class="text-center p-4 bg-gray-800/50 rounded-xl border border-primary-gold/70 shadow-inner">
+                    <p class="text-sm font-medium text-secondary-sepia mb-1">
+                        現在のクリア進捗 (謎コレクション)
+                    </p>
+                    <p class="text-4xl font-extrabold text-white text-glow">
+                        ${completedRiddles} / ${totalAnswerableRiddles} 
+                        <span class="text-lg font-medium text-gray-400">個クリア</span>
+                    </p>
+                </div>
+            `;
+            // ------------------------------------
+
+
+            riddles.forEach((riddle, index) => {
+                const isInteractive = riddle.interactive !== false; 
+                let isCompleted = progress[index] || false; 
+
+                if (riddle.multi) {
+                    const solvedAnswers = loadMultiProgress(index);
+                    const totalAnswers = Array.isArray(riddle.answer) ? riddle.answer.length : 1; 
+                    isCompleted = solvedAnswers.length === totalAnswers;
+                }
+
+                const item = document.createElement('div');
+                
+                let itemClass = `p-4 rounded-lg flex justify-between items-center transition duration-200`;
+                
+                if (isInteractive) {
+                    // 通常の謎
+                    itemClass += ` cursor-pointer ${isCompleted 
+                        ? 'bg-green-900/40 hover:bg-green-900/60 completed' 
+                        : 'bg-gray-900/40 hover:bg-gray-900/60 border border-transparent hover:border-primary-gold/50'}`;
+                    // クリックイベントを設定
+                    item.onclick = () => loadRiddle(index); 
+                } else {
+                    // interactive: false の謎（クリック不可、グレーアウト）
+                    itemClass += ' riddle-info-only'; // 専用クラスでグレーアウトを適用
+                    // クリックイベントを設定しない (ボタンとして機能させない)
+                }
+                
+                item.className = itemClass;
+                
+                let statusText = '';
+                
+                if (isInteractive) { 
+                    // 通常の謎のステータス表示
+                    if (riddle.multi) {
+                        const solvedAnswers = loadMultiProgress(index);
+                        const totalAnswers = Array.isArray(riddle.answer) ? riddle.answer.length : 1; 
+                        const solvedCount = solvedAnswers.length;
+                        
+                        if (solvedCount === totalAnswers) {
+                            statusText = `<span class="text-green-400 font-bold text-sm">【FULL CLEAR】</span>`;
+                        } else if (solvedCount > 0) {
+                            statusText = `<span class="text-primary-gold font-bold text-sm">${solvedCount}/${totalAnswers} CLEAR</span>`;
+                        } else {
+                            statusText = '<span class="text-gray-400 text-sm">未解答</span>';
+                        }
+    
+                    } else {
+                        statusText = isCompleted 
+                            ? '<span class="text-green-400 font-bold text-sm">【CLEAR】</span>'
+                            : '<span class="text-gray-400 text-sm">未解答</span>';
+                    }
+                } 
+                // interactive: false の謎にはステータス表示をしない（statusTextは空のまま）
+
+                item.innerHTML = `
+                    <span class="font-medium text-white">No.${riddle.level}. ${riddle.title}</span>
+                    ${statusText}
+                `;
+                riddleList.appendChild(item);
+            });
+        }
+        
+        /**
+         * プチ謎チャレンジモード画面を表示し、進捗を更新します。
+         */
+        function showMiniChallengePage() {
+            miniChallengePage.classList.remove('hidden');
+            indexPage.classList.add('hidden');
+            gameContainer.classList.add('hidden');
+            miniIndexPage.classList.add('hidden'); 
+            updateMiniProgress();
+        }
+
+        /**
+         * プチ謎 進捗確認画面を表示し、グリッドを生成します。
+         */
+        function showMiniIndexPage() {
+            miniChallengePage.classList.add('hidden');
+            miniIndexPage.classList.remove('hidden');
+            indexPage.classList.add('hidden');
+            gameContainer.classList.add('hidden');
+            generateMiniProgressGrid();
+        }
+        
+        /**
+         * プチ謎チャレンジモードの進捗表示を更新します。
+         */
+        function updateMiniProgress() {
+            const solvedAnswers = loadProgress(); 
+            const solvedCount = solvedAnswers.length;
+            const totalCount = MINI_TOTAL_COUNT;
+            
+            miniProgressSummary.innerHTML = `
+                ${solvedCount} / ${totalCount} 
+                <span class="text-lg font-medium text-gray-400">個クリア</span>
+            `;
+            
+            if (solvedCount === totalCount) {
+                miniAnswerInput.disabled = true;
+                document.getElementById('mini-submit-button').disabled = true;
+                miniAnswerInput.placeholder = "（全問クリア！お見事です！）";
+
+                showCustomModal(
+                    '完全制覇！', 
+                    '56問すべてのプチ謎を解き明かしました！素晴らしい集中力です！',
+                    '閉じる',
+                    'bg-green-600 hover:bg-green-700'
+                );
+            } else {
+                miniAnswerInput.disabled = false;
+                document.getElementById('mini-submit-button').disabled = false;
+                miniAnswerInput.placeholder = "答えを入力（ひらがな）";
+            }
+        }
+
+        /**
+         * プチ謎 進捗確認グリッドを生成します。
+         */
+        function generateMiniProgressGrid() {
+            miniProgressGrid.innerHTML = '';
+            const solvedAnswers = loadProgress(); 
+            const solvedSet = new Set(solvedAnswers); 
+            let unsolvedCount = 0;
+
+            miniAnswers.forEach((answer, index) => {
+                const problemNumber = index + 1; 
+                const isSolved = solvedSet.has(answer); 
+                
+                if (!isSolved) {
+                    unsolvedCount++;
+                }
+
+                const item = document.createElement('div');
+                item.textContent = problemNumber;
+                
+                item.classList.add('mini-progress-item');
+                if (isSolved) {
+                    item.classList.add('mini-progress-solved');
+                } else {
+                    item.classList.add('mini-progress-unsolved');
+                }
+
+                miniProgressGrid.appendChild(item);
+            });
+            
+            miniIndexUnsolvedCount.textContent = `未クリア問題数: ${unsolvedCount} 問`;
+        }
+
+        /**
+         * プチ謎チャレンジモードで解答をチェックします。
+         */
+        function checkMiniAnswer() {
+            const solvedAnswers = loadProgress(); 
+            const userAnswer = normalizeText(miniAnswerInput.value);
+
+            if (!userAnswer) {
+                miniFeedbackMessage.textContent = '答えを入力してください。';
+                miniFeedbackMessage.className = 'font-bold text-lg text-gray-500';
+                setTimeout(() => { miniFeedbackMessage.textContent = '', 1500 });
+                return;
+            }
+
+            if (solvedAnswers.includes(userAnswer)) {
+                miniFeedbackMessage.textContent = `✅ その答え（${userAnswer}）はすでに正解済みです。`;
+                miniFeedbackMessage.className = 'font-bold text-lg text-gray-400';
+                miniAnswerInput.value = '';
+                setTimeout(() => { miniFeedbackMessage.textContent = '', 1500 });
+                return;
+            }
+
+            const isCorrect = miniAnswers.includes(userAnswer);
+
+            if (isCorrect) {
+                const newCount = saveMiniAnswer(userAnswer);
+                
+                miniFeedbackMessage.textContent = `正解！ ${newCount}/${MINI_TOTAL_COUNT} クリア！`; 
+                miniFeedbackMessage.className = 'font-bold text-lg text-green-400';
+                miniAnswerInput.value = ''; 
+                miniAnswerInput.focus();
+                
+                updateMiniProgress(); 
+                
+                setTimeout(() => { miniFeedbackMessage.textContent = '', 1500 });
+                
+            } else {
+                miniFeedbackMessage.textContent = '残念、違います... もう一度考えてみましょう。';
+                miniFeedbackMessage.className = 'font-bold text-lg text-red-400';
+                miniAnswerInput.classList.add('border-red-500'); 
+                
+                setTimeout(() => {
+                    miniFeedbackMessage.textContent = '';
+                    miniAnswerInput.classList.remove('border-red-500');
+                }, 1500);
+            }
+        }
+
+
+        /**
+         * 指定されたインデックスの謎をロードして表示します。（ゲーム画面への切り替え）- メイン謎専用
+         */
+        function loadRiddle(index) {
+            currentLevelIndex = index;
+            
+            indexPage.classList.add('hidden');
+            gameContainer.classList.remove('hidden');
+            miniChallengePage.classList.add('hidden'); 
+            miniIndexPage.classList.add('hidden'); 
+
+            const riddles = getCurrentRiddles();
+            const currentRiddle = riddles[currentLevelIndex];
+            
+            
+            // 画面要素の更新
+            levelTitle.textContent = `【${currentRiddle.title}】`;
+            levelDisplay.textContent = `No.${currentRiddle.level} / ${riddles.filter(r => r.interactive !== false).length}`; // 分母を解答可能な数に変更
+            
+            // 複数回答ステータスエリアの初期化
+            multiAnswerStatus.classList.add('hidden');
+            multiAnswerStatus.textContent = '';
+
+            // RiddleTextエリアの初期化と画像/問題文の挿入
+            riddleText.innerHTML = ''; 
+            
+            // 画像の表示ロジック
+            const mediaUrl = currentRiddle.imageUrl;
+
+            if (mediaUrl) {
+                // 以前のコードで画像ファイル名が直接指定されていたものをそのまま利用
+                const fileIsCodeAccessible = [
+                    'A_1.png', 'B_1.png', 'B_2.png', 'B_3.png', 'B_4.png',　'C_1.png',
+                ].includes(mediaUrl);
+                
+                // 画像が存在する場合は<img>タグを生成
+                if (fileIsCodeAccessible) {
+                    const img = document.createElement('img');
+                    img.src = mediaUrl;
+                    img.alt = `謎コレクション No.${currentRiddle.level} の問題画像`;
+                    img.className = "max-w-full h-auto rounded-lg shadow-xl border border-gray-700";
+                    
+                    // エラーが発生したimg要素を新しいdiv要素に置き換える
+                    img.onerror = function() {
+                        const errorDiv = document.createElement('div');
+                        errorDiv.className = "text-xl text-red-400";
+                        errorDiv.textContent = `画像 (${mediaUrl}) の読み込みに失敗しました。`;
+                        this.replaceWith(errorDiv); 
+                    };
+
+                    riddleText.appendChild(img);
+                } else {
+                    // 画像URLがファイル名リストにない場合はプレースホルダー
+                     riddleText.innerHTML += `<div class="text-lg text-gray-400">画像プレースホルダー (${mediaUrl})</div>`;
+                }
+
+                // 画像の下に問題文を配置
+                riddleText.innerHTML += `<p class="mt-4 text-white text-base md:text-xl whitespace-pre-wrap">${currentRiddle.question}</p>`;
+
+            } else {
+                // 画像がない場合は問題文のみ
+                riddleText.innerHTML = `<p class="text-white text-xl md:text-2xl whitespace-pre-wrap">${currentRiddle.question}</p>`;
+            }
+            
+            // 回答入力フォームの初期化
+            answerInput.value = '';
+            feedbackMessage.textContent = '';
+            
+            // 複数回答時の処理
+            if (currentRiddle.multi) {
+                const solvedAnswers = loadMultiProgress(currentLevelIndex);
+                const totalAnswers = Array.isArray(currentRiddle.answer) ? currentRiddle.answer.length : 1;
+                
+                multiAnswerStatus.classList.remove('hidden');
+                multiAnswerStatus.textContent = `複数回答問題: ${solvedAnswers.length}/${totalAnswers} 個解答済み`;
+                
+                // 全て解けているかチェック
+                const isFullCleared = solvedAnswers.length === totalAnswers;
+                
+                if (isFullCleared) {
+                    answerInput.disabled = true;
+                    answerInput.placeholder = "（すべての答えを解答済みです）";
+                    document.getElementById('submit-button').disabled = true;
+                } else {
+                    answerInput.disabled = false;
+                    answerInput.placeholder = "答えを入力（ひらがな）";
+                    document.getElementById('submit-button').disabled = false;
+                }
+            } else {
+                // 通常の単一回答の謎の場合
+                const progress = loadProgress();
+                const isCleared = progress[currentLevelIndex] || false;
+                
+                answerInput.disabled = isCleared;
+                document.getElementById('submit-button').disabled = isCleared;
+                answerInput.placeholder = isCleared ? "（クリア済みです）" : "答えを入力（ひらがな）";
+            }
+        }
+        
+        /**
+         * 不正解時のフィードバックを共通化します。
+         */
+        function showIncorrectFeedback() {
+             feedbackMessage.textContent = '残念、違います... もう一度考えてみましょう。';
+             feedbackMessage.className = 'font-bold text-lg text-red-400';
+             answerInput.classList.add('border-red-500'); 
+                
+             setTimeout(() => {
+                 feedbackMessage.textContent = '';
+                 answerInput.classList.remove('border-red-500');
+             }, 1500);
+        }
+
+        /**
+         * 回答をチェックします。（メイン謎専用）
+         */
+        function checkAnswer() {
+            const currentRiddle = getCurrentRiddles()[currentLevelIndex];
+            const userAnswer = normalizeText(answerInput.value);
+            
+            if (!userAnswer) {
+                feedbackMessage.textContent = '答えを入力してください。';
+                feedbackMessage.className = 'font-bold text-lg text-gray-500';
+                setTimeout(() => { feedbackMessage.textContent = '', 1500 });
+                return;
+            }
+
+            // 複数回答の処理
+            if (currentRiddle.multi) {
+                const correctAnswers = Array.isArray(currentRiddle.answer) ? currentRiddle.answer.map(normalizeText) : [];
+                const solvedAnswers = loadMultiProgress(currentLevelIndex);
+                
+                if (solvedAnswers.includes(userAnswer)) {
+                    feedbackMessage.textContent = `⚠️ その答え（${userAnswer}）はすでに解答済みです。`;
+                    feedbackMessage.className = 'font-bold text-lg text-yellow-500';
+                    answerInput.value = '';
+                    setTimeout(() => { feedbackMessage.textContent = '', 1500 });
+                    return;
+                }
+                
+                if (correctAnswers.includes(userAnswer)) {
+                    // 正解の場合 (複数回答の一部)
+                    saveMultiAnswer(currentLevelIndex, userAnswer);
+                    const newSolvedAnswers = loadMultiProgress(currentLevelIndex);
+                    const totalAnswers = correctAnswers.length;
+
+                    feedbackMessage.textContent = `✨ 正解！ ${newSolvedAnswers.length}/${totalAnswers} 個目の答えを解読しました。`;
+                    feedbackMessage.className = 'font-bold text-lg text-primary-gold';
+                    answerInput.value = '';
+                    answerInput.focus();
+                    
+                    multiAnswerStatus.textContent = `複数回答問題: ${newSolvedAnswers.length}/${totalAnswers} 個解答済み`;
+                    
+                    if (newSolvedAnswers.length === totalAnswers) {
+                        // 全問クリア
+                        showCustomModal(
+                            'FULL CLEAR！', 
+                            `No.${currentRiddle.level} 「${currentRiddle.title}」のすべての答えを解き明かしました！`,
+                            '一覧に戻る',
+                            'bg-green-600 hover:bg-green-700 text-white',
+                            () => showIndexPage()
+                        );
+                        answerInput.disabled = true;
+                        document.getElementById('submit-button').disabled = true;
+                        answerInput.placeholder = "（すべての答えを解答済みです）";
+                    } else {
+                         setTimeout(() => { feedbackMessage.textContent = '', 2500 });
+                    }
+                } else {
+                    // 不正解の場合
+                    showIncorrectFeedback();
+                }
+            } 
+            // 単一回答の処理
+            else {
+                const correctAnswer = normalizeText(currentRiddle.answer);
+                
+                if (userAnswer === correctAnswer) {
+                    // 正解の場合
+                    saveCompletion(currentLevelIndex);
+                    
+                    showCustomModal(
+                        'CLEAR！', 
+                        `No.${currentRiddle.level} 「${currentRiddle.title}」をクリアしました！`,
+                        '一覧に戻る',
+                        'bg-green-600 hover:bg-green-700 text-white',
+                        () => showIndexPage()
+                    );
+                    
+                    answerInput.disabled = true;
+                    document.getElementById('submit-button').disabled = true;
+                    answerInput.placeholder = "（クリア済みです）";
+
+                } else {
+                    // 不正解の場合
+                    showIncorrectFeedback();
+                }
+            }
+        }
+        
+        /**
+         * 進捗リセットの確認モーダルを表示します。
+         * @param {string} collection - 'main' or 'mini'
+         */
+        function confirmClearProgress(collection) {
+            const collectionName = collection === 'main' ? '謎コレクション' : 'プチ謎';
+            const key = collection === 'main' ? MAIN_STORAGE_KEY : MINI_COMPLETED_ANSWERS_KEY;
+            const multiKey = collection === 'main' ? MAIN_MULTI_STORAGE_KEY : null;
+
+            showCustomModal(
+                '⚠️ 進捗リセットの確認',
+                `<p class="text-red-600 font-semibold">本当に${collectionName}の進捗をリセットしますか？</p><p>この操作は元に戻せません。</p>`,
+                'リセットする',
+                'bg-red-500 hover:bg-red-600 text-white',
+                () => {
+                    // 確定時の処理
+                    localStorage.removeItem(key);
+                    if (multiKey) {
+                        localStorage.removeItem(multiKey);
+                    }
+                    showCustomModal(
+                        '✅ リセット完了',
+                        `${collectionName}の進捗をリセットしました。`,
+                        '閉じる',
+                        'bg-green-500 hover:bg-green-600 text-white',
+                        () => {
+                            // UIを更新
+                            if (collection === 'main') {
+                                showIndexPage();
+                            } else {
+                                showMiniChallengePage();
+                            }
+                        }
+                    );
+                },
+                'キャンセル'
+            );
+        }
+
+        // --- 初期化 ---
+        window.onload = function() {
+            // 初期表示はイントロ画面
+            showIntroPage(); 
+        };
+        
+    </script>
+</body>
+</html>
