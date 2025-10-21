@@ -81,6 +81,32 @@
             }
         }
     </script>
+    /**
+ * 謎解き画面（mini-challenge-page）を表示し、カタログ画面を非表示にする
+ */
+function showMiniChallengePage() {
+    // ページタイトルを元の名前に戻す
+    document.title = "（元のページタイトル）"; // 例: "AUCTION | 謎解き"
+    
+    // 謎解き画面を表示 (hiddenクラスを削除)
+    document.getElementById('mini-challenge-page').classList.remove('hidden');
+    // カタログ画面を非表示 (hiddenクラスを追加)
+    document.getElementById('catalog-page').classList.add('hidden');
+}
+
+
+/**
+ * カタログ画面を表示し、謎解き画面を非表示にする (ボタンの onclick="goToCatalogPage()" に対応)
+ */
+function goToCatalogPage() {
+    // ページタイトルを「カタログの情報」に変更する
+    document.title = "カタログの情報";
+    
+    // カタログ画面を表示 (hiddenクラスを削除)
+    document.getElementById('catalog-page').classList.remove('hidden');
+    // 謎解き画面を非表示 (hiddenクラスを追加)
+    document.getElementById('mini-challenge-page').classList.add('hidden');
+}
 </head>
 <body class="min-h-screen flex items-center justify-center p-4">
 
@@ -163,6 +189,14 @@
             
             <button onclick="confirmClearProgress('mini')" class="w-full bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-lg transition duration-200 text-sm">
                 プチ謎の進捗をリセット
+            </button>
+        </div>
+
+            <div id="catalog-page" class="hidden text-center">
+            <h1 class="text-3xl font-extrabold mb-6 text-primary-gold">カタログの情報</h1>
+            <img src="カタログの情報.png" alt="カタログ画像" class="mx-auto my-6 max-w-full rounded-lg shadow-xl" />
+            <button onclick="showMiniChallengePage()" class="w-full bg-blue-700 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition duration-200 text-sm mt-8">
+            謎の解答画面に戻る
             </button>
         </div>
 
