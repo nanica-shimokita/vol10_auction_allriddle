@@ -102,9 +102,6 @@
             <button id="tab-mini" onclick="switchCollection('mini')" class="px-4 py-2 text-lg font-semibold text-gray-400 hover:text-white transition duration-200">
                 プチ謎
             </button>
-            <button id="tab-info" onclick="switchCollection('info')" class="px-4 py-2 text-lg font-semibold text-gray-400 hover:text-white transition duration-200">
-                その他情報
-            </button>
         </div>
         
         <!-- 謎コレクション目次ページ -->
@@ -287,11 +284,9 @@
 
         const tabMain = document.getElementById('tab-main');
         const tabMini = document.getElementById('tab-mini');
-        const tabInfo = document.getElementById('tab-info');
         const indexPage = document.getElementById('index-page');
         const miniChallengePage = document.getElementById('mini-challenge-page');
         const miniIndexPage = document.getElementById('mini-index-page'); 
-        const InfoPage = document.getElementById('info-page');
         const gameContainer = document.getElementById('game-container');
         const riddleList = document.getElementById('riddle-list');
         const progressSummaryMain = document.getElementById('progress-summary-main');
@@ -527,7 +522,6 @@
             // タブの見た目を更新
             tabMain.classList.remove('tab-active');
             tabMini.classList.remove('tab-active');
-            tabInfo.classList.remove('tab-active');
             
             // 全てのゲーム/目次コンテナを非表示に
             indexPage.classList.add('hidden');
