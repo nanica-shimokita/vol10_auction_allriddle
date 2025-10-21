@@ -1,1 +1,60 @@
+/* style.css */
 
+body {
+    font-family: 'Inter', 'Noto Sans JP', sans-serif;
+    background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%); 
+    color: #e4e4e4;
+    min-height: 100vh; 
+}
+/* Tailwindの設定を拡張 */
+.riddle-card {
+    /* 修正点: main-container の背景色を画像1の暗い背景色に合わせる */
+    background-color: #1a202c; /* より暗いネイビー系 */
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.7); /* 影をより深く */
+    border-radius: 1rem; /* 少し角を丸く */
+}
+.text-glow {
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.7); /* 少し光沢を抑える */
+}
+.completed {
+    /* クリア済みの左ボーダーは緑を維持しつつ、視認性を高める */
+    border-left: 5px solid #059669; 
+}
+/* メインタイトルにセリフ体を適用 */
+.title-serif {
+    font-family: 'Georgia', 'Times New Roman', serif;
+}
+.tab-active {
+    border-bottom: 2px solid #D4AF37; /* アクティブタブの下線 */
+    color: #E0B050;
+}
+/* プチ謎の進捗グリッドアイテムのスタイル */
+.mini-progress-item {
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.1rem;
+    border-radius: 0.5rem;
+    transition: all 0.3s;
+    cursor: default;
+}
+.mini-progress-solved {
+    background-color: #059669; /* エメラルドグリーン */
+    color: #fff;
+    box-shadow: 0 0 12px rgba(5, 150, 105, 0.8); /* 緑の光沢 */
+}
+.mini-progress-unsolved {
+    background-color: #374151; /* ダークグレー */
+    color: #9ca3af; /* 薄い文字色 */
+    border: 1px solid #4b5563;
+}
+/* クリック不可の謎のスタイル */
+.riddle-info-only {
+    cursor: default !important;
+    opacity: 0.5;
+    background-color: #27272a !important; /* gray-800 のような色 */
+    border-left: 5px solid #52525b !important; /* gray-600 のようなボーダー */
+}
