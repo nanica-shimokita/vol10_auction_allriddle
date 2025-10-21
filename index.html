@@ -1,18 +1,52 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AUCTION コンプリートサイト</title>
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <link rel="stylesheet" href="style.css">
-    
-    <script src="script.js"></script>
-    
-    </head>
-<body class="min-h-screen flex items-center justify-center p-4">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>謎コレクション</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 
-    </body>
-</html>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        /* HTML/Bodyの基本スタイル */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #111827; /* bg-gray-900 */
+        }
+        
+        /* タブのアクティブ状態のスタイル */
+        .tab-active {
+            color: #D4AF37; /* primary-gold */
+            border-bottom: 3px solid #D4AF37;
+        }
+
+        /* プチ謎グリッドの基本スタイル */
+        .mini-progress-item {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+
+        /* プチ謎グリッドの未解答スタイル */
+        .mini-progress-unsolved {
+            background-color: #1F2937; /* bg-gray-800 */
+            color: #9CA3AF; /* text-gray-400 */
+            border: 1px solid #374151; /* border-gray-700 */
+        }
+
+        /* プチ謎グリッドの解答済みスタイル */
+        .mini-progress-solved {
+            background-color: #065F46; /* green-800 */
+            color: #D1FAE5; /* green-100 */
+            border: 1px solid #34D399; /* green-400 */
+        }
+
+        /* テキストのグロー効果 (目立つ進捗表示用) */
+        .text-glow {
+            text-shadow: 0 0 5px rgba(212, 175, 5
