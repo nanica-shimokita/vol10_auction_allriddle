@@ -7,13 +7,10 @@
     
 <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* 日本語フォントを優先し、セリフ体を追加 */
         body {
             font-family: 'Inter', 'Noto Sans JP', sans-serif;
-            /* 背景を夜明け前の空のような深いグラデーションに変更（空の色） */
             background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%); 
             color: #e4e4e4;
-            /* スマートフォン最適化のため、min-heightを確保 */
             min-height: 100vh; 
         }
         /* Tailwindの設定を拡張 */
@@ -24,7 +21,6 @@
             border-radius: 1rem; /* 少し角を丸く */
         }
         .text-glow {
-            /* ゴールドの光沢感を出す */
             text-shadow: 0 0 10px rgba(255, 215, 0, 0.7); /* 少し光沢を抑える */
         }
         .completed {
