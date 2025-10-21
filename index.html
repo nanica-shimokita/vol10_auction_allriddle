@@ -222,7 +222,7 @@
         // --- 1. データ定義（謎コレクション） ---
         const mainRiddles = [
             {　level: 1,title: "ANIMAGRAM",question: "", imageUrl: "A_1.png", answer: "ふたこぶらくだ"},
-            {  level: 2, title: "Box of Maze", question: "ここに謎が表示されます？", answer: "さいきん"},
+            {  level: 2, title: "Box of Maze", question: "ここに謎が表示されます？", imageUrls: ["A_1.png", "B_1.png"], answer: "さいきん"},
             { level: 3, title: "CUT AND CONNECT", question: "", imageUrl: "C_1.png", answer: "すかい"},
             { level: 4, title: "DEVIDED WORLD", question: "ここに謎が表示されます", imageUrl: "image_68f8df.png", answer: "ひっと"},
             { level: 5, title: "ENSHRINE TOWER", question: "ここに謎が表示されます", imageUrl: "image_6883a5.png", answer: "まてんろう"},
@@ -819,41 +819,38 @@
             riddleText.innerHTML = ''; 
             
             // 画像の表示ロジック
-            const mediaUrl = currentRiddle.imageUrl;
+            // 謎データが 'imageUrls' という画像の配列を持っていることを期待
+            const mediaUrls = currentRiddle.imageUrls; 
 
-            if (mediaUrl) {
-                // 以前のコードで画像ファイル名が直接指定されていたものをそのまま利用
-                const fileIsCodeAccessible = [
-                    'A_1.png', 'B_1.png', 'B_2.png', 'B_3.png', 'B_4.png', 'C_1.png', 'image_69007d.png', 
-                    'image_68f8df.png', 'image_6883a5.png', 'image_681321.png', 
-                    'image_67a302.png', 'image_67a2ab.png', 'image_67a288.png', 
-                    'image_67981a.png', 'image_5dadff.png', 
-                    // images/で始まるファイル名もリストに追加してエラー回避
-                    "images/riddle_12.png", "images/riddle_13.png", "images/riddle_15.png", "images/riddle_16.png", "images/riddle_17.png"
-                ].includes(mediaUrl);
+            // 画像が存在し、かつそれが配列であることを確認
+            if (mediaUrls && Array.isArray(mediaUrls) && mediaUrls.length > 0) {
+    
+            // 以前のファイル名リストによるアクセス制御は、ここでは省略します。
+            // 必要であれば、このforEachループ内でチェックを再実装してください。
+    
+                mediaUrls.forEach(mediaUrl => {
+                    // 画像が存在しない（URLがない）謎のために空文字チェック
+                    if (mediaUrl) { 
+                        const img = document.createElement('img');
+                        img.src = mediaUrl;
+                        img.alt = `謎コレクション No.${currentRiddle.level} の問題画像`;
+                        // スタイル：max-w-full h-auto rounded-lg shadow-xl border border-gray-700
+                        // さらに、画像と画像の間、または画像と問題文の間にマージンを入れる mb-4 を追加
+                        img.className = "max-w-full h-auto rounded-lg shadow-xl border border-gray-700 mb-4"; 
+                        
+                        // エラーが発生したimg要素を新しいdiv要素に置き換える
+                        img.onerror = function() {
+                            const errorDiv = document.createElement('div');
+                            errorDiv.className = "text-xl text-red-400";
+                            errorDiv.textContent = `画像 (${mediaUrl}) の読み込みに失敗しました。`;
+                            this.replaceWith(errorDiv); 
+                                };
                 
-                // 画像が存在する場合は<img>タグを生成
-                if (fileIsCodeAccessible) {
-                    const img = document.createElement('img');
-                    img.src = mediaUrl;
-                    img.alt = `謎コレクション No.${currentRiddle.level} の問題画像`;
-                    img.className = "max-w-full h-auto rounded-lg shadow-xl border border-gray-700";
-                    
-                    // エラーが発生したimg要素を新しいdiv要素に置き換える
-                    img.onerror = function() {
-                        const errorDiv = document.createElement('div');
-                        errorDiv.className = "text-xl text-red-400";
-                        errorDiv.textContent = `画像 (${mediaUrl}) の読み込みに失敗しました。`;
-                        this.replaceWith(errorDiv); 
-                    };
-
-                    riddleText.appendChild(img);
-                } else {
-                    // 画像URLがファイル名リストにない場合はプレースホルダー
-                     riddleText.innerHTML += `<div class="text-lg text-gray-400">画像プレースホルダー (${mediaUrl})</div>`;
+                riddleText.appendChild(img);
                 }
+                });
 
-                // 画像の下に問題文を配置
+                // 画像と問題文の挿入位置を変更: 画像の後に問題文を配置する
                 riddleText.innerHTML += `<p class="mt-4 text-white text-base md:text-xl whitespace-pre-wrap">${currentRiddle.question}</p>`;
 
             } else {
