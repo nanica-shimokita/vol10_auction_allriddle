@@ -224,7 +224,7 @@
             {　level: 1,title: "ANIMAGRAM",question: "", imageUrls: ["A_1.png"], answer: "ふたこぶらくだ"},
             {  level: 2, title: "Box of Maze", question: "※実際には箱を動かすことができないため、プレイヤーはそれぞれが見えている面の情報を共有し合いながら解き進めます。", imageUrls: ["B_rule.png","B_1.png", "B_2.png","B_3.png","B_4.png"], answer: "さいきん"},
             { level: 3, title: "CUT AND CONNECT", question: "上記謎に加えて2cm幅の白いマスキングテープが一緒に手に入ります。", imageUrls: ["C_1.png"], answer: "すかい"},
-            { level: 4, title: "DEVIDED WORLD", question: "ここに謎が表示されます", imageUrls: ["D_1.png"], answer: "ひっと"},
+            { level: 4, title: "DEVIDED WORLD", question: "ここに謎が表示されます", imageUrls: ["D_1.png"], answer: "ひっと", tools:[{ url:"D_red.html", text:"赤の指示書を見る" }]},
             { level: 5, title: "ENSHRINE TOWER", question: "ここに謎が表示されます", imageUrls: ["E_1.png"], answer: "まてんろう"},
             { level: 6, title: "FORMULA", question: "ここに謎が表示されます", imageUrls: ["F_1.png"], answer: "さんせっと"},
             { level: 7, 
@@ -857,7 +857,35 @@
                 // 画像がない場合は問題文のみ
                 riddleText.innerHTML = `<p class="text-white text-xl md:text-2xl whitespace-pre-wrap">${currentRiddle.question}</p>`;
             }
+
+            // ********** 💡 複数補助ボタン追加のロジック 💡 **********
             
+                // currentRiddleオブジェクトに tools プロパティ（配列）が存在する場合に処理
+                if (currentRiddle.tools && Array.isArray(currentRiddle.tools) && currentRiddle.tools.length > 0) {
+                    
+                    let buttonsHtml = '<p class="mt-8 flex flex-wrap gap-4 justify-center">'; // ボタンを横に並べるために flex と gap を使用
+            
+                    currentRiddle.tools.forEach(tool => {
+                        // tool.url と tool.text を使用してボタンHTMLを生成
+                        buttonsHtml += `
+                            <a href="${tool.url}" target="_blank" rel="noopener noreferrer">
+                                <button class="bg-primary-gold hover:bg-yellow-600 text-gray-900 font-extrabold py-3 px-6 rounded-lg transition duration-200 shadow-xl active:scale-95">
+                                    ${tool.text}
+                                </button>
+                            </a>
+                        `;
+                    });
+                    
+                    buttonsHtml += '</p>'; // <p>タグを閉じる
+            
+                    // riddleTextコンテナの最後に追加
+                    riddleText.innerHTML += buttonsHtml; 
+                }
+            
+                // ********** 💡 ロジック修正ここまで 💡 **********
+            
+            } // loadRiddle関数の閉じ括弧
+
             // 回答入力フォームの初期化
             answerInput.value = '';
             feedbackMessage.textContent = '';
