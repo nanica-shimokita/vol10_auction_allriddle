@@ -774,7 +774,7 @@
             if (!userAnswer) {
                 miniFeedbackMessage.textContent = '答えを入力してください。';
                 miniFeedbackMessage.className = 'font-bold text-lg text-gray-500';
-                setTimeout(() => { miniFeedbackMessage.textContent = '', 1500 });
+                setTimeout(() => { miniFeedbackMessage.textContent = '', 5000 });
                 return;
             }
 
@@ -782,7 +782,7 @@
                 miniFeedbackMessage.textContent = `✅ その答え（${userAnswer}）はすでに正解済みです。`;
                 miniFeedbackMessage.className = 'font-bold text-lg text-gray-400';
                 miniAnswerInput.value = '';
-                setTimeout(() => { miniFeedbackMessage.textContent = '', 1500 });
+                setTimeout(() => { miniFeedbackMessage.textContent = '', 5000 });
                 return;
             }
 
@@ -798,7 +798,7 @@
                 
                 updateMiniProgress(); 
                 
-                setTimeout(() => { miniFeedbackMessage.textContent = '', 1500 });
+                setTimeout(() => { miniFeedbackMessage.textContent = '', 5000 });
                 
             } else {
                 miniFeedbackMessage.textContent = '残念、違います... もう一度考えてみましょう。';
@@ -808,7 +808,7 @@
                 setTimeout(() => {
                     miniFeedbackMessage.textContent = '';
                     miniAnswerInput.classList.remove('border-red-500');
-                }, 1500);
+                }, 5000);
             }
         }
 
