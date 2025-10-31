@@ -796,28 +796,29 @@
             const isCorrect = miniAnswers.includes(userAnswer);
 
             if (isCorrect) {
-                const newCount = saveMiniAnswer(userAnswer);
-                
-                miniFeedbackMessage.textContent = `正解！ ${newCount}/${MINI_TOTAL_COUNT} クリア！`; 
-                miniFeedbackMessage.className = 'font-bold text-lg text-green-400';
-                miniAnswerInput.value = ''; 
-                miniAnswerInput.focus();
-                
-                updateMiniProgress(); 
-                
-                setTimeout(() => { miniFeedbackMessage.textContent = '', 5000 });
-                
-            } else {
-                miniFeedbackMessage.textContent = '残念、違います... もう一度考えてみましょう。';
-                miniFeedbackMessage.className = 'font-bold text-lg text-red-400';
-                miniAnswerInput.classList.add('border-red-500'); 
-                
-                setTimeout(() => {
-                    miniFeedbackMessage.textContent = '';
-                    miniAnswerInput.classList.remove('border-red-500');
-                }, 5000);
-            }
-        }
+                const newCount = saveMiniAnswer(userAnswer);
+                
+                miniFeedbackMessage.textContent = `正解！ ${newCount}/${MINI_TOTAL_COUNT} クリア！`; 
+                miniFeedbackMessage.className = 'font-bold text-lg text-green-400';
+                miniAnswerInput.value = ''; 
+                miniAnswerInput.focus();
+                
+                updateMiniProgress();  // 👈 ここで全問クリア時にモーダルが表示される可能性あり
+                
+                // 🚨 メッセージをクリアする処理を最後に実行するように移動
+                setTimeout(() => { miniFeedbackMessage.textContent = '', 5000 });
+                
+            } else {
+                miniFeedbackMessage.textContent = '残念、違います... もう一度考えてみましょう。';
+                miniFeedbackMessage.className = 'font-bold text-lg text-red-400';
+                miniAnswerInput.classList.add('border-red-500'); 
+                
+                setTimeout(() => {
+                    miniFeedbackMessage.textContent = '';
+                    miniAnswerInput.classList.remove('border-red-500');
+                }, **1500**); // 👈 不正解時は1.5秒に戻す
+            }
+        }
 
 
         /**
