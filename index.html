@@ -817,8 +817,9 @@
                 updateMiniProgress();  // 👈 ここで全問クリア時にモーダルが表示される可能性あり
                 
                 // 🚨 メッセージをクリアする処理を最後に実行するように移動
-                setTimeout(() => { miniFeedbackMessage.textContent = '', 1500 });
-                
+                setTimeout(() => { 
+                    miniFeedbackMessage.textContent = ''; 
+                }, 1500); // 1500ミリ秒 (1.5秒) 後に実行
             } else {
                 miniFeedbackMessage.textContent = '残念、違います... もう一度考えてみましょう。';
                 miniFeedbackMessage.className = 'font-bold text-lg text-red-400';
