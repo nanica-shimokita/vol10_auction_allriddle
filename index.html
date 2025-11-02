@@ -800,7 +800,9 @@
                 miniFeedbackMessage.textContent = `✅ その答え（${userAnswer}）はすでに正解済みです。`;
                 miniFeedbackMessage.className = 'font-bold text-lg text-gray-400';
                 miniAnswerInput.value = '';
-                setTimeout(() => { miniFeedbackMessage.textContent = '', 1500 });
+                setTimeout(() => { 
+                    miniFeedbackMessage.textContent = '';
+                 }, 1500); // 1500ミリ秒 (1.5秒) 後に実行
                 return;
             }
 
