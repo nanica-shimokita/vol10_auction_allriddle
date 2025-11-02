@@ -792,7 +792,7 @@
             if (!userAnswer) {
                 miniFeedbackMessage.textContent = '答えを入力してください。';
                 miniFeedbackMessage.className = 'font-bold text-lg text-gray-500';
-                setTimeout(() => { miniFeedbackMessage.textContent = '', 5000 });
+                setTimeout(() => { miniFeedbackMessage.textContent = '', 1500 });
                 return;
             }
 
@@ -800,7 +800,7 @@
                 miniFeedbackMessage.textContent = `✅ その答え（${userAnswer}）はすでに正解済みです。`;
                 miniFeedbackMessage.className = 'font-bold text-lg text-gray-400';
                 miniAnswerInput.value = '';
-                setTimeout(() => { miniFeedbackMessage.textContent = '', 5000 });
+                setTimeout(() => { miniFeedbackMessage.textContent = '', 1500 });
                 return;
             }
 
@@ -817,7 +817,7 @@
                 updateMiniProgress();  // 👈 ここで全問クリア時にモーダルが表示される可能性あり
                 
                 // 🚨 メッセージをクリアする処理を最後に実行するように移動
-                setTimeout(() => { miniFeedbackMessage.textContent = '', 5000 });
+                setTimeout(() => { miniFeedbackMessage.textContent = '', 1500 });
                 
             } else {
                 miniFeedbackMessage.textContent = '残念、違います... もう一度考えてみましょう。';
